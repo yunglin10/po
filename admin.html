@@ -372,6 +372,110 @@
       font-size: 13px;
     }
 
+    .crop-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: none;
+      place-items: center;
+      padding: 22px;
+      background: rgba(18, 32, 38, 0.64);
+      backdrop-filter: blur(10px);
+    }
+
+    .crop-modal.is-open {
+      display: grid;
+    }
+
+    .crop-dialog {
+      width: min(980px, 100%);
+      max-height: calc(100vh - 44px);
+      overflow: auto;
+      padding: clamp(18px, 3vw, 28px);
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      border-radius: 24px;
+      background: var(--paper);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+    }
+
+    .crop-head,
+    .crop-body {
+      display: grid;
+      gap: 18px;
+    }
+
+    .crop-head {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .crop-head h2 {
+      margin: 0;
+    }
+
+    .crop-body {
+      grid-template-columns: minmax(0, 1fr) 260px;
+      align-items: start;
+    }
+
+    .crop-stage {
+      overflow: hidden;
+      border: 1px solid #cddde1;
+      border-radius: 18px;
+      background:
+        linear-gradient(45deg, #edf3f4 25%, transparent 25%),
+        linear-gradient(-45deg, #edf3f4 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #edf3f4 75%),
+        linear-gradient(-45deg, transparent 75%, #edf3f4 75%),
+        #fff;
+      background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+      background-size: 20px 20px;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .crop-stage.is-dragging {
+      cursor: grabbing;
+    }
+
+    .crop-stage canvas {
+      display: block;
+      width: 100%;
+      max-height: 62vh;
+      object-fit: contain;
+    }
+
+    .crop-controls {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fffdf8;
+    }
+
+    .ratio-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .ratio-grid .btn {
+      min-height: 38px;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .ratio-grid .btn.active {
+      background: #123c4a;
+      border-color: #123c4a;
+      color: white;
+    }
+
     .publish-box {
       display: grid;
       gap: 14px;
@@ -405,6 +509,11 @@
       .grid,
       .project-editor,
       .image-field {
+        grid-template-columns: 1fr;
+      }
+
+      .crop-body,
+      .crop-head {
         grid-template-columns: 1fr;
       }
 
@@ -593,7 +702,7 @@
               <div class="small-actions">
                 <button class="btn ghost" type="button" data-clear-image="heroImage">清除自訂圖</button>
               </div>
-              <p class="hint">清除後會回到目前網站原本的背景圖。</p>
+              <p class="hint">選擇圖片後會先進入裁剪。清除後會回到目前網站原本的背景圖。</p>
             </div>
           </div>
           <div class="field full image-field">
@@ -605,7 +714,7 @@
               <div class="small-actions">
                 <button class="btn ghost" type="button" data-clear-image="aboutImage">清除自訂圖</button>
               </div>
-              <p class="hint">這就是你截圖中右側那張職人照片。</p>
+              <p class="hint">選擇圖片後會先進入裁剪。這就是你截圖中右側那張職人照片。</p>
             </div>
           </div>
 
@@ -881,7 +990,7 @@
         <div class="panel-head">
           <div>
             <h2>安裝實績</h2>
-            <p class="hint">新增最近施工照片、保留舊作品。照片可選本機檔案，會轉成單檔 HTML 可用的圖片資料。</p>
+            <p class="hint">新增最近施工照片、保留舊作品。照片可選本機檔案，上傳後會先裁剪，再轉成單檔 HTML 可用的圖片資料。</p>
           </div>
           <button class="btn green" id="addProject">新增一筆案例</button>
         </div>
@@ -942,6 +1051,44 @@
         </div>
       </section>
     </main>
+  </div>
+
+  <div class="crop-modal" id="cropModal" aria-hidden="true">
+    <div class="crop-dialog" role="dialog" aria-modal="true" aria-labelledby="cropTitle">
+      <div class="crop-head">
+        <div>
+          <h2 id="cropTitle">裁剪圖片</h2>
+          <p class="hint" id="cropHint">拖曳圖片調整位置，使用滑桿縮放，確認後會存成適合網頁使用的圖片。</p>
+        </div>
+        <button class="btn ghost" type="button" id="cropClose">取消</button>
+      </div>
+      <div class="crop-body">
+        <div class="crop-stage" id="cropStage">
+          <canvas id="cropCanvas" width="1200" height="900"></canvas>
+        </div>
+        <div class="crop-controls">
+          <label class="field" for="cropZoom">
+            <span>縮放</span>
+            <input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1">
+          </label>
+          <div>
+            <label>裁剪比例</label>
+            <div class="ratio-grid" aria-label="裁剪比例">
+              <button class="btn ghost" type="button" data-crop-ratio="1.7777777778">橫圖 16:9</button>
+              <button class="btn ghost" type="button" data-crop-ratio="1.3333333333">相簿 4:3</button>
+              <button class="btn ghost" type="button" data-crop-ratio="0.8">直圖 4:5</button>
+              <button class="btn ghost" type="button" data-crop-ratio="1">方形 1:1</button>
+            </div>
+          </div>
+          <p class="hint">小提醒：首頁背景建議用 16:9；創辦人照片建議 4:5；施工案例通常用 4:3 最穩。</p>
+          <button class="btn ghost" type="button" id="cropReset">重置位置</button>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="cropCancel">取消</button>
+        <button class="btn primary" type="button" id="cropApply">使用裁剪後圖片</button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1052,6 +1199,19 @@
     const githubRepo = document.querySelector("#githubRepo");
     const githubToken = document.querySelector("#githubToken");
     const commitMessage = document.querySelector("#commitMessage");
+    const cropModal = document.querySelector("#cropModal");
+    const cropTitle = document.querySelector("#cropTitle");
+    const cropHint = document.querySelector("#cropHint");
+    const cropStage = document.querySelector("#cropStage");
+    const cropCanvas = document.querySelector("#cropCanvas");
+    const cropZoom = document.querySelector("#cropZoom");
+    const cropApply = document.querySelector("#cropApply");
+    const cropReset = document.querySelector("#cropReset");
+    const cropCancel = document.querySelector("#cropCancel");
+    const cropClose = document.querySelector("#cropClose");
+    const cropContext = cropCanvas.getContext("2d");
+    let cropSession = null;
+    let cropDrag = null;
 
     function setStatus(message) {
       statusEl.textContent = message;
@@ -1150,6 +1310,130 @@
         .replace(/^-+|-+$/g, "") || `project-${Date.now()}`;
     }
 
+    function cropPresetForKey(key) {
+      if (key === "heroImage") {
+        return {
+          title: "裁剪首頁背景圖",
+          hint: "首頁背景適合寬版橫圖。可拖曳主體位置，讓人物或冷氣不要被手機版裁掉。",
+          aspect: 16 / 9,
+          outputWidth: 1600
+        };
+      }
+
+      if (key === "aboutImage") {
+        return {
+          title: "裁剪創辦人照片",
+          hint: "這張會放在關於我們區塊，直向 4:5 通常最穩，人物臉部請留在中間偏上。",
+          aspect: 4 / 5,
+          outputWidth: 1000
+        };
+      }
+
+      return {
+        title: "裁剪施工案例照片",
+        hint: "案例照片會放在相簿網格，4:3 最容易保持整齊。",
+        aspect: 4 / 3,
+        outputWidth: 1200
+      };
+    }
+
+    function outputWidthForAspect(aspect) {
+      if (Math.abs(aspect - 16 / 9) < 0.02) return 1600;
+      if (Math.abs(aspect - 4 / 5) < 0.02) return 1000;
+      return 1200;
+    }
+
+    function setActiveCropRatio() {
+      document.querySelectorAll("[data-crop-ratio]").forEach((button) => {
+        const ratio = Number(button.dataset.cropRatio);
+        button.classList.toggle("active", !!cropSession && Math.abs(cropSession.aspect - ratio) < 0.02);
+      });
+    }
+
+    function clampCropOffset() {
+      if (!cropSession) return;
+      const { image, zoom } = cropSession;
+      const scale = Math.max(cropCanvas.width / image.width, cropCanvas.height / image.height) * zoom;
+      const drawnWidth = image.width * scale;
+      const drawnHeight = image.height * scale;
+      const maxX = Math.max(0, (drawnWidth - cropCanvas.width) / 2);
+      const maxY = Math.max(0, (drawnHeight - cropCanvas.height) / 2);
+      cropSession.offsetX = Math.min(maxX, Math.max(-maxX, cropSession.offsetX));
+      cropSession.offsetY = Math.min(maxY, Math.max(-maxY, cropSession.offsetY));
+    }
+
+    function resizeCropCanvas() {
+      if (!cropSession) return;
+      cropCanvas.width = cropSession.outputWidth;
+      cropCanvas.height = Math.round(cropSession.outputWidth / cropSession.aspect);
+      clampCropOffset();
+    }
+
+    function renderCropCanvas() {
+      if (!cropSession) return;
+      resizeCropCanvas();
+      const { image, zoom, offsetX, offsetY } = cropSession;
+      const scale = Math.max(cropCanvas.width / image.width, cropCanvas.height / image.height) * zoom;
+      const drawnWidth = image.width * scale;
+      const drawnHeight = image.height * scale;
+      const dx = (cropCanvas.width - drawnWidth) / 2 + offsetX;
+      const dy = (cropCanvas.height - drawnHeight) / 2 + offsetY;
+
+      cropContext.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+      cropContext.fillStyle = "#f5f1e8";
+      cropContext.fillRect(0, 0, cropCanvas.width, cropCanvas.height);
+      cropContext.drawImage(image, dx, dy, drawnWidth, drawnHeight);
+      setActiveCropRatio();
+    }
+
+    function closeCropper() {
+      cropSession = null;
+      cropDrag = null;
+      cropModal.classList.remove("is-open");
+      cropModal.setAttribute("aria-hidden", "true");
+      cropStage.classList.remove("is-dragging");
+    }
+
+    function openImageCropper(file, options) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const image = new Image();
+        image.onload = () => {
+          const preset = {
+            ...cropPresetForKey(options.key),
+            ...options
+          };
+
+          cropSession = {
+            image,
+            zoom: 1,
+            offsetX: 0,
+            offsetY: 0,
+            aspect: preset.aspect,
+            outputWidth: preset.outputWidth || outputWidthForAspect(preset.aspect),
+            onApply: preset.onApply
+          };
+
+          cropTitle.textContent = preset.title;
+          cropHint.textContent = preset.hint;
+          cropZoom.value = "1";
+          cropModal.classList.add("is-open");
+          cropModal.setAttribute("aria-hidden", "false");
+          renderCropCanvas();
+        };
+        image.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function setStateImage(key, imageUrl) {
+      state[key] = imageUrl;
+      const hidden = document.querySelector(`[data-key="${key}"]`);
+      if (hidden) hidden.value = imageUrl;
+      refreshImagePreviews();
+      saveState();
+    }
+
     function renderProjectsEditor() {
       projectList.innerHTML = "";
 
@@ -1173,13 +1457,15 @@
         upload.addEventListener("change", () => {
           const file = upload.files && upload.files[0];
           if (!file) return;
-          const reader = new FileReader();
-          reader.onload = () => {
-            project.imageUrl = reader.result;
-            renderProjectsEditor();
-            saveState();
-          };
-          reader.readAsDataURL(file);
+          openImageCropper(file, {
+            ...cropPresetForKey("projectImage"),
+            onApply: (imageUrl) => {
+              project.imageUrl = imageUrl;
+              renderProjectsEditor();
+              saveState();
+            }
+          });
+          upload.value = "";
         });
 
         const body = document.createElement("div");
@@ -1783,17 +2069,13 @@
       input.addEventListener("change", () => {
         const file = input.files && input.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => {
-          const key = input.dataset.imageKey;
-          state[key] = reader.result;
-          const hidden = document.querySelector(`[data-key="${key}"]`);
-          if (hidden) hidden.value = reader.result;
-          refreshImagePreviews();
-          saveState();
-          input.value = "";
-        };
-        reader.readAsDataURL(file);
+        const key = input.dataset.imageKey;
+        openImageCropper(file, {
+          ...cropPresetForKey(key),
+          key,
+          onApply: (imageUrl) => setStateImage(key, imageUrl)
+        });
+        input.value = "";
       });
     });
     document.querySelectorAll("[data-clear-image]").forEach((button) => {
@@ -1805,6 +2087,72 @@
         refreshImagePreviews();
         saveState();
       });
+    });
+    cropZoom.addEventListener("input", () => {
+      if (!cropSession) return;
+      cropSession.zoom = Number(cropZoom.value);
+      clampCropOffset();
+      renderCropCanvas();
+    });
+    document.querySelectorAll("[data-crop-ratio]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!cropSession) return;
+        cropSession.aspect = Number(button.dataset.cropRatio);
+        cropSession.outputWidth = outputWidthForAspect(cropSession.aspect);
+        cropSession.offsetX = 0;
+        cropSession.offsetY = 0;
+        renderCropCanvas();
+      });
+    });
+    cropStage.addEventListener("pointerdown", (event) => {
+      if (!cropSession) return;
+      cropDrag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        offsetX: cropSession.offsetX,
+        offsetY: cropSession.offsetY
+      };
+      cropStage.setPointerCapture(event.pointerId);
+      cropStage.classList.add("is-dragging");
+    });
+    cropStage.addEventListener("pointermove", (event) => {
+      if (!cropSession || !cropDrag) return;
+      const rect = cropCanvas.getBoundingClientRect();
+      const scaleX = cropCanvas.width / rect.width;
+      const scaleY = cropCanvas.height / rect.height;
+      cropSession.offsetX = cropDrag.offsetX + (event.clientX - cropDrag.startX) * scaleX;
+      cropSession.offsetY = cropDrag.offsetY + (event.clientY - cropDrag.startY) * scaleY;
+      clampCropOffset();
+      renderCropCanvas();
+    });
+    function stopCropDrag() {
+      cropDrag = null;
+      cropStage.classList.remove("is-dragging");
+    }
+    cropStage.addEventListener("pointerup", stopCropDrag);
+    cropStage.addEventListener("pointercancel", stopCropDrag);
+    cropReset.addEventListener("click", () => {
+      if (!cropSession) return;
+      cropSession.zoom = 1;
+      cropSession.offsetX = 0;
+      cropSession.offsetY = 0;
+      cropZoom.value = "1";
+      renderCropCanvas();
+    });
+    cropApply.addEventListener("click", () => {
+      if (!cropSession || typeof cropSession.onApply !== "function") return;
+      const imageUrl = cropCanvas.toDataURL("image/jpeg", 0.88);
+      cropSession.onApply(imageUrl);
+      closeCropper();
+      setStatus("裁剪後圖片已套用");
+    });
+    [cropCancel, cropClose].forEach((button) => button.addEventListener("click", closeCropper));
+    cropModal.addEventListener("click", (event) => {
+      if (event.target === cropModal) closeCropper();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && cropSession) closeCropper();
     });
     document.querySelector("#addProject").addEventListener("click", addProject);
     document.querySelector("#downloadProjects").addEventListener("click", downloadProjectsJs);
