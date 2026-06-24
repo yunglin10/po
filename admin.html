@@ -321,6 +321,44 @@
       border: 1px solid #dbe7e9;
     }
 
+    .image-field {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fffdf8;
+    }
+
+    .image-preview {
+      min-height: 150px;
+      border-radius: 16px;
+      border: 1px solid #dbe7e9;
+      background: #edf3f4 center / cover no-repeat;
+    }
+
+    .subsection {
+      grid-column: 1 / -1;
+      margin: 8px 0 0;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .subsection h3 {
+      margin: 0;
+      font-size: 18px;
+      color: #123c4a;
+    }
+
+    .subsection p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
     .small-actions {
       display: flex;
       flex-wrap: wrap;
@@ -365,7 +403,8 @@
       }
 
       .grid,
-      .project-editor {
+      .project-editor,
+      .image-field {
         grid-template-columns: 1fr;
       }
 
@@ -388,6 +427,7 @@
       </div>
       <nav class="tabs" aria-label="後台選單">
         <button class="tab active" data-panel="basic">首頁與故事</button>
+        <button class="tab" data-panel="details">全站細節</button>
         <button class="tab" data-panel="contact">聯絡資訊</button>
         <button class="tab" data-panel="projects">安裝實績</button>
         <button class="tab" data-panel="publish">輸出與發布</button>
@@ -454,6 +494,241 @@
         </div>
       </section>
 
+      <section class="panel" id="panel-details">
+        <div class="panel-head">
+          <div>
+            <h2>全站細節</h2>
+            <p class="hint">這裡可以改導覽列、英文標語、亮點卡、區塊標題、服務卡片、三大優勢、頁尾與主要圖片。</p>
+          </div>
+          <button class="btn ghost" data-action="preview">預覽新版網站</button>
+        </div>
+        <div class="grid">
+          <div class="subsection">
+            <h3>導覽列與首頁細節</h3>
+            <p>包含左上角品牌、選單文字、英文標語與三個亮點卡。</p>
+          </div>
+          <div class="field">
+            <label for="brandMark">品牌圓形字</label>
+            <input id="brandMark" data-key="brandMark">
+          </div>
+          <div class="field">
+            <label for="brandName">品牌名稱</label>
+            <input id="brandName" data-key="brandName">
+          </div>
+          <div class="field">
+            <label for="navHome">選單：主頁</label>
+            <input id="navHome" data-key="navHome">
+          </div>
+          <div class="field">
+            <label for="navServices">選單：服務項目</label>
+            <input id="navServices" data-key="navServices">
+          </div>
+          <div class="field">
+            <label for="navWorks">選單：安裝實績</label>
+            <input id="navWorks" data-key="navWorks">
+          </div>
+          <div class="field">
+            <label for="navContact">選單：聯絡資訊</label>
+            <input id="navContact" data-key="navContact">
+          </div>
+          <div class="field full">
+            <label for="heroKicker">首頁英文標語</label>
+            <input id="heroKicker" data-key="heroKicker">
+          </div>
+          <div class="field">
+            <label for="heroNote1Title">亮點 1 大字</label>
+            <input id="heroNote1Title" data-key="heroNote1Title">
+          </div>
+          <div class="field">
+            <label for="heroNote1Text">亮點 1 小字</label>
+            <input id="heroNote1Text" data-key="heroNote1Text">
+          </div>
+          <div class="field">
+            <label for="heroNote2Title">亮點 2 大字</label>
+            <input id="heroNote2Title" data-key="heroNote2Title">
+          </div>
+          <div class="field">
+            <label for="heroNote2Text">亮點 2 小字</label>
+            <input id="heroNote2Text" data-key="heroNote2Text">
+          </div>
+          <div class="field">
+            <label for="heroNote3Title">亮點 3 大字</label>
+            <input id="heroNote3Title" data-key="heroNote3Title">
+          </div>
+          <div class="field">
+            <label for="heroNote3Text">亮點 3 小字</label>
+            <input id="heroNote3Text" data-key="heroNote3Text">
+          </div>
+          <div class="field">
+            <label for="storyEyebrow">故事區小標</label>
+            <input id="storyEyebrow" data-key="storyEyebrow">
+          </div>
+          <div class="field">
+            <label for="value1">故事標籤 1</label>
+            <input id="value1" data-key="value1">
+          </div>
+          <div class="field">
+            <label for="value2">故事標籤 2</label>
+            <input id="value2" data-key="value2">
+          </div>
+          <div class="field">
+            <label for="value3">故事標籤 3</label>
+            <input id="value3" data-key="value3">
+          </div>
+          <div class="field">
+            <label for="value4">故事標籤 4</label>
+            <input id="value4" data-key="value4">
+          </div>
+
+          <div class="subsection">
+            <h3>首頁與故事圖片</h3>
+            <p>首頁背景圖建議用橫圖；創辦人照片建議用直圖或半身照。</p>
+          </div>
+          <div class="field full image-field">
+            <div class="image-preview" data-preview-key="heroImage"></div>
+            <div>
+              <label for="heroImageFile">首頁背景圖</label>
+              <input id="heroImage" type="hidden" data-key="heroImage">
+              <input id="heroImageFile" type="file" accept="image/*" data-image-key="heroImage">
+              <div class="small-actions">
+                <button class="btn ghost" type="button" data-clear-image="heroImage">清除自訂圖</button>
+              </div>
+              <p class="hint">清除後會回到目前網站原本的背景圖。</p>
+            </div>
+          </div>
+          <div class="field full image-field">
+            <div class="image-preview" data-preview-key="aboutImage"></div>
+            <div>
+              <label for="aboutImageFile">創辦人 / 關於我們照片</label>
+              <input id="aboutImage" type="hidden" data-key="aboutImage">
+              <input id="aboutImageFile" type="file" accept="image/*" data-image-key="aboutImage">
+              <div class="small-actions">
+                <button class="btn ghost" type="button" data-clear-image="aboutImage">清除自訂圖</button>
+              </div>
+              <p class="hint">這就是你截圖中右側那張職人照片。</p>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <h3>服務項目</h3>
+            <p>四張服務卡片的標題、說明與下一步按鈕都可以改。</p>
+          </div>
+          <div class="field">
+            <label for="serviceEyebrow">服務區小標</label>
+            <input id="serviceEyebrow" data-key="serviceEyebrow">
+          </div>
+          <div class="field">
+            <label for="serviceTitle">服務區標題</label>
+            <input id="serviceTitle" data-key="serviceTitle">
+          </div>
+          <div class="field full">
+            <label for="serviceLead">服務區說明</label>
+            <textarea id="serviceLead" data-key="serviceLead"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="service1Title">服務 1 標題</label>
+            <input id="service1Title" data-key="service1Title">
+          </div>
+          <div class="field">
+            <label for="service1Link">服務 1 按鈕</label>
+            <input id="service1Link" data-key="service1Link">
+          </div>
+          <div class="field full">
+            <label for="service1Text">服務 1 說明</label>
+            <textarea id="service1Text" data-key="service1Text"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="service2Title">服務 2 標題</label>
+            <input id="service2Title" data-key="service2Title">
+          </div>
+          <div class="field">
+            <label for="service2Link">服務 2 按鈕</label>
+            <input id="service2Link" data-key="service2Link">
+          </div>
+          <div class="field full">
+            <label for="service2Text">服務 2 說明</label>
+            <textarea id="service2Text" data-key="service2Text"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="service3Title">服務 3 標題</label>
+            <input id="service3Title" data-key="service3Title">
+          </div>
+          <div class="field">
+            <label for="service3Link">服務 3 按鈕</label>
+            <input id="service3Link" data-key="service3Link">
+          </div>
+          <div class="field full">
+            <label for="service3Text">服務 3 說明</label>
+            <textarea id="service3Text" data-key="service3Text"></textarea>
+          </div>
+
+          <div class="field">
+            <label for="service4Title">服務 4 標題</label>
+            <input id="service4Title" data-key="service4Title">
+          </div>
+          <div class="field">
+            <label for="service4Link">服務 4 按鈕</label>
+            <input id="service4Link" data-key="service4Link">
+          </div>
+          <div class="field full">
+            <label for="service4Text">服務 4 說明</label>
+            <textarea id="service4Text" data-key="service4Text"></textarea>
+          </div>
+
+          <div class="subsection">
+            <h3>三大優勢、實績與頁尾</h3>
+            <p>首頁下方區塊和頁尾文字也可以在這裡統一修改。</p>
+          </div>
+          <div class="field">
+            <label for="advantage1Title">優勢 1 標題</label>
+            <input id="advantage1Title" data-key="advantage1Title">
+          </div>
+          <div class="field full">
+            <label for="advantage1Text">優勢 1 說明</label>
+            <textarea id="advantage1Text" data-key="advantage1Text"></textarea>
+          </div>
+          <div class="field">
+            <label for="advantage2Title">優勢 2 標題</label>
+            <input id="advantage2Title" data-key="advantage2Title">
+          </div>
+          <div class="field full">
+            <label for="advantage2Text">優勢 2 說明</label>
+            <textarea id="advantage2Text" data-key="advantage2Text"></textarea>
+          </div>
+          <div class="field">
+            <label for="advantage3Title">優勢 3 標題</label>
+            <input id="advantage3Title" data-key="advantage3Title">
+          </div>
+          <div class="field full">
+            <label for="advantage3Text">優勢 3 說明</label>
+            <textarea id="advantage3Text" data-key="advantage3Text"></textarea>
+          </div>
+          <div class="field">
+            <label for="worksEyebrow">實績區小標</label>
+            <input id="worksEyebrow" data-key="worksEyebrow">
+          </div>
+          <div class="field">
+            <label for="worksTitle">實績區標題</label>
+            <input id="worksTitle" data-key="worksTitle">
+          </div>
+          <div class="field full">
+            <label for="worksLead">實績區說明</label>
+            <textarea id="worksLead" data-key="worksLead"></textarea>
+          </div>
+          <div class="field full">
+            <label for="footerText">頁尾版權文字</label>
+            <input id="footerText" data-key="footerText">
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-action="save">儲存到本機後台</button>
+          <button class="btn ghost" data-action="reset">重新讀取目前網站</button>
+        </div>
+      </section>
+
       <section class="panel" id="panel-contact">
         <div class="panel-head">
           <div>
@@ -493,6 +768,108 @@
           <div class="field full">
             <label for="contactLead">聯絡區說明文字</label>
             <textarea id="contactLead" data-key="contactLead"></textarea>
+          </div>
+          <div class="field">
+            <label for="contactEyebrow">聯絡區小標</label>
+            <input id="contactEyebrow" data-key="contactEyebrow">
+          </div>
+          <div class="field">
+            <label for="contactTitle">聯絡區標題</label>
+            <input id="contactTitle" data-key="contactTitle">
+          </div>
+          <div class="field">
+            <label for="lineButton">LINE 按鈕文字</label>
+            <input id="lineButton" data-key="lineButton">
+          </div>
+          <div class="field">
+            <label for="instagramLabel">Instagram 按鈕文字</label>
+            <input id="instagramLabel" data-key="instagramLabel">
+          </div>
+          <div class="field">
+            <label for="mapLabel">地圖按鈕文字</label>
+            <input id="mapLabel" data-key="mapLabel">
+          </div>
+          <div class="field">
+            <label for="footerLineLabel">頁尾 LINE 文字</label>
+            <input id="footerLineLabel" data-key="footerLineLabel">
+          </div>
+          <div class="field">
+            <label for="footerInstagramLabel">頁尾 Instagram 文字</label>
+            <input id="footerInstagramLabel" data-key="footerInstagramLabel">
+          </div>
+
+          <div class="subsection">
+            <h3>聯絡資訊標籤</h3>
+            <p>通常不用改，但如果之後要改成「服務地區」或「預約電話」也可以直接調整。</p>
+          </div>
+          <div class="field">
+            <label for="infoCompanyLabel">標籤：公司名稱</label>
+            <input id="infoCompanyLabel" data-key="infoCompanyLabel">
+          </div>
+          <div class="field">
+            <label for="infoAreaLabel">標籤：服務範圍</label>
+            <input id="infoAreaLabel" data-key="infoAreaLabel">
+          </div>
+          <div class="field">
+            <label for="infoLandlineLabel">標籤：市話</label>
+            <input id="infoLandlineLabel" data-key="infoLandlineLabel">
+          </div>
+          <div class="field">
+            <label for="infoMobileLabel">標籤：手機 / LINE</label>
+            <input id="infoMobileLabel" data-key="infoMobileLabel">
+          </div>
+          <div class="field">
+            <label for="infoAddressLabel">標籤：地址</label>
+            <input id="infoAddressLabel" data-key="infoAddressLabel">
+          </div>
+          <div class="field">
+            <label for="infoHoursLabel">標籤：營業時間</label>
+            <input id="infoHoursLabel" data-key="infoHoursLabel">
+          </div>
+
+          <div class="subsection">
+            <h3>表單文字</h3>
+            <p>右側預約表單的標題、欄位名稱、提示文字與送出後訊息都能改。</p>
+          </div>
+          <div class="field">
+            <label for="formEyebrow">表單小標</label>
+            <input id="formEyebrow" data-key="formEyebrow">
+          </div>
+          <div class="field">
+            <label for="formTitle">表單標題</label>
+            <input id="formTitle" data-key="formTitle">
+          </div>
+          <div class="field">
+            <label for="formNameLabel">姓名欄標籤</label>
+            <input id="formNameLabel" data-key="formNameLabel">
+          </div>
+          <div class="field">
+            <label for="formNamePlaceholder">姓名欄提示文字</label>
+            <input id="formNamePlaceholder" data-key="formNamePlaceholder">
+          </div>
+          <div class="field">
+            <label for="formPhoneLabel">電話欄標籤</label>
+            <input id="formPhoneLabel" data-key="formPhoneLabel">
+          </div>
+          <div class="field">
+            <label for="formPhonePlaceholder">電話欄提示文字</label>
+            <input id="formPhonePlaceholder" data-key="formPhonePlaceholder">
+          </div>
+          <div class="field">
+            <label for="formMessageLabel">備註欄標籤</label>
+            <input id="formMessageLabel" data-key="formMessageLabel">
+          </div>
+          <div class="field">
+            <label for="formButton">表單按鈕文字</label>
+            <input id="formButton" data-key="formButton">
+          </div>
+          <div class="field full">
+            <label for="formMessagePlaceholder">備註欄提示文字</label>
+            <textarea id="formMessagePlaceholder" data-key="formMessagePlaceholder"></textarea>
+          </div>
+          <div class="field full">
+            <label for="formSuccess">送出後提示文字</label>
+            <textarea id="formSuccess" data-key="formSuccess"></textarea>
           </div>
         </div>
         <div class="actions">
@@ -575,14 +952,58 @@
     const WEBSITE_FILE = "index.html";
 
     const fallbackState = {
+      brandMark: "冷",
+      brandName: "一定冷空調工程有限公司",
+      navHome: "主頁",
+      navServices: "服務項目",
+      navWorks: "安裝實績",
+      navContact: "聯絡資訊",
+      heroKicker: "TAOYUAN AIR CONDITIONING",
       heroTitle: "一定冷 最可靠的冷氣專家！",
       heroText: "一定冷空調工程有限公司 — 專業安裝、保養、維修與商用空調規劃，用細心施工把每個空間整理到剛剛好的涼爽。",
       heroPrimary: "聯絡我們",
       heroSecondary: "查看服務項目",
+      heroNote1Title: "30+",
+      heroNote1Text: "多年現場經驗",
+      heroNote2Title: "桃園",
+      heroNote2Text: "在地到府服務",
+      heroNote3Title: "安心",
+      heroNote3Text: "安裝後保養維修",
+      storyEyebrow: "STORY",
+      value1: "誠信報價",
+      value2: "細心施工",
+      value3: "乾淨收尾",
+      value4: "一定冷承諾",
+      heroImage: "",
+      aboutImage: "",
       aboutTitle: "莊育興的職人精神，把每一台冷氣都當自己家的在裝",
       aboutP1: "大家好，我是「一定冷空調」的創辦人莊育興。早年跟著師傅從冷氣業務開始做起，後來轉到安裝與維修第一線，累積了無數現場經驗，也更確定自己想做的是一間讓客人放心託付的冷氣工程行。",
       aboutP2: "2015 年，我和家人一起創立「一定冷」。這個名字不是口號，而是我對每一位客人的承諾：不誇大、不敷衍，從評估、報價、施工到後續維護，都用實在的態度把問題處理好。",
       aboutP3: "只要一通電話，我們會協助判斷現場條件，安排合適的安裝、保養或維修方式，讓家裡、店面與辦公室都能回到安心舒適的溫度。",
+      serviceEyebrow: "SERVICE",
+      serviceTitle: "服務項目",
+      serviceLead: "從家用冷氣、商用設備到大型空調專案，依照現場條件提供安裝、出租、買斷與維修保養方案。",
+      service1Title: "專業冷氣空調出租",
+      service1Text: "活動、臨時工地、展場或短期使用需求，可依空間條件規劃出租設備與安裝方式。",
+      service1Link: "詢問出租方案",
+      service2Title: "商用箱型冷氣",
+      service2Text: "店面、餐飲、廠辦與大型空間使用，協助評估冷房能力、出風配置與維護動線。",
+      service2Link: "規劃商用冷氣",
+      service3Title: "家用變頻分離式",
+      service3Text: "一般住家、套房與客廳安裝，重視管線美觀、排水順暢與日後清潔保養便利。",
+      service3Link: "預約家用安裝",
+      service4Title: "VRV專案工程",
+      service4Text: "多室內機、大型空間或商辦專案，依照使用情境規劃冷媒管路、設備配置與施工流程。",
+      service4Link: "洽詢專案工程",
+      advantage1Title: "在地服務",
+      advantage1Text: "專營大桃園地區，莊爸爸已有冷氣服務 30 年以上經驗，只要一通電話，協助安排服務與售後維修。",
+      advantage2Title: "商用出租與買斷",
+      advantage2Text: "大型空調可依企業需求提供短期出租、長期使用或買斷方案，降低一次性設備成本。",
+      advantage3Title: "家用冷氣超優惠",
+      advantage3Text: "與各大知名品牌配合直供，替家庭用戶爭取實在價格，並由熟悉現場的師傅細心施工。",
+      worksEyebrow: "WORKS",
+      worksTitle: "安裝實績",
+      worksLead: "這裡會保留近期與過往施工紀錄。之後只要在 projects.js 新增一筆資料，就能自動出現在相簿網格中。",
       contactLead: "把現場狀況、冷氣品牌或照片傳給我們，可以更快協助判斷適合的安裝、保養或維修方式。",
       company: "一定冷空調工程有限公司",
       serviceArea: "桃園全區",
@@ -591,11 +1012,39 @@
       address: "桃園市平鎮區環南路二段155號",
       hours: "週一到週日 08:00 - 20:00",
       instagram: "https://www.instagram.com/cool__air_chuang?igsh=MTNod2Q4ejg5MTBtdA==",
+      lineButton: "點我加 LINE 諮詢",
+      instagramLabel: "Instagram",
+      mapLabel: "Google 地圖",
+      footerLineLabel: "LINE",
+      footerInstagramLabel: "Instagram",
+      infoCompanyLabel: "公司名稱",
+      infoAreaLabel: "服務範圍",
+      infoLandlineLabel: "市話",
+      infoMobileLabel: "手機 / LINE",
+      infoAddressLabel: "地址",
+      infoHoursLabel: "營業時間",
+      contactEyebrow: "CONTACT",
+      contactTitle: "聯絡資訊",
+      formEyebrow: "FORM",
+      formTitle: "預約表單",
+      formNameLabel: "姓名",
+      formNamePlaceholder: "請輸入您的姓名",
+      formPhoneLabel: "電話",
+      formPhonePlaceholder: "例：0912-345-678",
+      formMessageLabel: "需求備註",
+      formMessagePlaceholder: "例：服務地址、冷氣坪數、想安裝/維修/保養、方便聯絡時間...",
+      formButton: "送出需求",
+      formSuccess: "已收到你的需求範例。正式上線時可改接 Google 表單、LINE 或後端 API。",
+      footerText: "© 2026 一定冷空調工程有限公司 All Rights Reserved.",
       projects: []
     };
 
     let state = structuredClone(fallbackState);
     let templateHtml = "";
+    let defaultImages = {
+      heroImage: "",
+      aboutImage: ""
+    };
 
     const statusEl = document.querySelector("#status");
     const projectList = document.querySelector("#projectList");
@@ -651,9 +1100,31 @@
       return getTemplateCandidates()[0];
     }
 
+    async function hydrateDefaultImages() {
+      try {
+        await fetchTemplateHtml();
+        const doc = new DOMParser().parseFromString(templateHtml, "text/html");
+        defaultImages = {
+          heroImage: getCssBackgroundUrl(doc, ".hero"),
+          aboutImage: getCssBackgroundUrl(doc, ".about-photo")
+        };
+        refreshImagePreviews();
+      } catch (error) {
+        console.warn("無法讀取預設圖片", error);
+      }
+    }
+
     function collectForm() {
       document.querySelectorAll("[data-key]").forEach((field) => {
         state[field.dataset.key] = field.value;
+      });
+    }
+
+    function refreshImagePreviews() {
+      document.querySelectorAll("[data-preview-key]").forEach((preview) => {
+        const key = preview.dataset.previewKey;
+        const image = state[key] || defaultImages[key] || "";
+        preview.style.backgroundImage = image ? `url("${image}")` : "";
       });
     }
 
@@ -661,6 +1132,7 @@
       document.querySelectorAll("[data-key]").forEach((field) => {
         field.value = state[field.dataset.key] || "";
       });
+      refreshImagePreviews();
       renderProjectsEditor();
     }
 
@@ -803,37 +1275,194 @@
       if (element) element.textContent = text || "";
     }
 
+    function setAttribute(doc, selector, attribute, value) {
+      const element = doc.querySelector(selector);
+      if (element) element.setAttribute(attribute, value || "");
+    }
+
+    function getActionText(element) {
+      if (!element) return "";
+      const ownText = Array.from(element.childNodes)
+        .filter((node) => node.nodeType === 3)
+        .map((node) => node.textContent)
+        .join(" ")
+        .trim();
+      return ownText || element.textContent.replace("→", "").trim();
+    }
+
+    function cssUrl(value) {
+      return String(value || "").replace(/"/g, "%22").replace(/\n/g, "");
+    }
+
+    function extractFirstUrl(value) {
+      const match = String(value || "").match(/url\((["']?)(.*?)\1\)/);
+      return match ? match[2] : "";
+    }
+
+    function getInlineBackgroundUrl(element) {
+      return extractFirstUrl(element?.getAttribute("style") || "");
+    }
+
+    function getCssRuleBody(doc, selector) {
+      const styles = Array.from(doc.querySelectorAll("style")).map((style) => style.textContent).join("\n");
+      const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const match = styles.match(new RegExp(`${escaped}\\s*\\{([\\s\\S]*?)\\n\\s*\\}`, "m"));
+      return match ? match[1] : "";
+    }
+
+    function getCssBackgroundUrl(doc, selector) {
+      return extractFirstUrl(getCssRuleBody(doc, selector));
+    }
+
+    function setEditableBackground(element, image, mode = "cover") {
+      if (!element) return;
+      if (!image) {
+        element.style.removeProperty("background");
+        return;
+      }
+
+      if (mode === "hero") {
+        element.style.background = `linear-gradient(90deg, rgba(248, 244, 236, 0.94) 0%, rgba(248, 244, 236, 0.78) 42%, rgba(248, 244, 236, 0.18) 72%), url("${cssUrl(image)}") center center / cover no-repeat`;
+        return;
+      }
+
+      element.style.background = `url("${cssUrl(image)}") center center / cover no-repeat`;
+    }
+
     function updateTemplate(html) {
       const doc = new DOMParser().parseFromString(html, "text/html");
 
+      setText(doc, ".brand-mark", state.brandMark);
+      setText(doc, ".brand > span:last-child", state.brandName);
+      const navLinks = doc.querySelectorAll(".nav-links a");
+      [state.navHome, state.navServices, state.navWorks, state.navContact].forEach((text, index) => {
+        if (navLinks[index]) navLinks[index].textContent = text || "";
+      });
+
+      setText(doc, ".hero-kicker", state.heroKicker);
       setText(doc, ".hero h1", state.heroTitle);
       setText(doc, ".hero-content > p", state.heroText);
       setButtonText(doc.querySelector(".hero .btn-primary"), state.heroPrimary);
       setButtonText(doc.querySelector(".hero .btn-ghost"), state.heroSecondary);
+      setEditableBackground(doc.querySelector(".hero"), state.heroImage, "hero");
 
+      const noteCards = doc.querySelectorAll(".note-card");
+      [
+        [state.heroNote1Title, state.heroNote1Text],
+        [state.heroNote2Title, state.heroNote2Text],
+        [state.heroNote3Title, state.heroNote3Text]
+      ].forEach(([title, text], index) => {
+        if (!noteCards[index]) return;
+        const titleEl = noteCards[index].querySelector("strong");
+        const textEl = noteCards[index].querySelector("span");
+        if (titleEl) titleEl.textContent = title || "";
+        if (textEl) textEl.textContent = text || "";
+      });
+
+      setText(doc, "#about .eyebrow", state.storyEyebrow);
       setText(doc, "#about .section-title", state.aboutTitle);
       const aboutParagraphs = doc.querySelectorAll("#about .story-card > p:not(.eyebrow)");
       [state.aboutP1, state.aboutP2, state.aboutP3].forEach((text, index) => {
         if (aboutParagraphs[index]) aboutParagraphs[index].textContent = text || "";
       });
+      const valuePills = doc.querySelectorAll("#about .value-pill");
+      [state.value1, state.value2, state.value3, state.value4].forEach((text, index) => {
+        if (valuePills[index]) valuePills[index].textContent = text || "";
+      });
+      setEditableBackground(doc.querySelector(".about-photo"), state.aboutImage);
 
+      setText(doc, "#services .service-head .eyebrow", state.serviceEyebrow);
+      setText(doc, "#services .service-head .section-title", state.serviceTitle);
+      setText(doc, "#services .service-head .section-lead", state.serviceLead);
+      const serviceCards = doc.querySelectorAll("#services .service-card");
+      [
+        [state.service1Title, state.service1Text, state.service1Link],
+        [state.service2Title, state.service2Text, state.service2Link],
+        [state.service3Title, state.service3Text, state.service3Link],
+        [state.service4Title, state.service4Text, state.service4Link]
+      ].forEach(([title, text, linkText], index) => {
+        const card = serviceCards[index];
+        if (!card) return;
+        const titleEl = card.querySelector("h3");
+        const textEl = card.querySelector("p");
+        if (titleEl) titleEl.textContent = title || "";
+        if (textEl) textEl.textContent = text || "";
+        setButtonText(card.querySelector(".mini-link"), linkText);
+      });
+
+      const advantageCards = doc.querySelectorAll("#services .advantage-card");
+      [
+        [state.advantage1Title, state.advantage1Text],
+        [state.advantage2Title, state.advantage2Text],
+        [state.advantage3Title, state.advantage3Text]
+      ].forEach(([title, text], index) => {
+        const card = advantageCards[index];
+        if (!card) return;
+        const titleEl = card.querySelector("h3");
+        const textEl = card.querySelector("p");
+        if (titleEl) titleEl.textContent = title || "";
+        if (textEl) textEl.textContent = text || "";
+      });
+
+      setText(doc, "#works .projects-head .eyebrow", state.worksEyebrow);
+      setText(doc, "#works .projects-head .section-title", state.worksTitle);
+      setText(doc, "#works .projects-head .section-lead", state.worksLead);
+
+      setText(doc, "#contact .contact-panel .eyebrow", state.contactEyebrow);
+      setText(doc, "#contact .contact-panel .section-title", state.contactTitle);
       setText(doc, "#contact .contact-panel .section-lead", state.contactLead);
+      const infoLabels = doc.querySelectorAll(".info-list li span");
+      [state.infoCompanyLabel, state.infoAreaLabel, state.infoLandlineLabel, state.infoMobileLabel, state.infoAddressLabel, state.infoHoursLabel].forEach((text, index) => {
+        if (infoLabels[index]) infoLabels[index].textContent = text || "";
+      });
       const infoValues = doc.querySelectorAll(".info-list li strong");
       [state.company, state.serviceArea, state.landline, state.mobile, state.address, state.hours].forEach((text, index) => {
         if (infoValues[index]) infoValues[index].textContent = text || "";
       });
 
       const lineButton = doc.querySelector(".btn-line");
-      if (lineButton) lineButton.href = getLineUrl();
+      if (lineButton) {
+        lineButton.href = getLineUrl();
+        setButtonText(lineButton, state.lineButton);
+      }
 
-      const instagramButton = Array.from(doc.querySelectorAll(".social-row a")).find((a) => a.textContent.includes("Instagram"));
-      if (instagramButton) instagramButton.href = state.instagram || "#";
+      const socialButtons = doc.querySelectorAll(".social-row a");
+      const instagramButton = socialButtons[0];
+      if (instagramButton) {
+        instagramButton.href = state.instagram || "#";
+        instagramButton.textContent = state.instagramLabel || "";
+      }
 
-      const mapButton = Array.from(doc.querySelectorAll(".social-row a")).find((a) => a.textContent.includes("Google"));
-      if (mapButton) mapButton.href = getMapUrl();
+      const mapButton = socialButtons[1];
+      if (mapButton) {
+        mapButton.href = getMapUrl();
+        mapButton.textContent = state.mapLabel || "";
+      }
 
       const mapFrame = doc.querySelector(".map-frame iframe");
       if (mapFrame) mapFrame.src = getMapEmbedUrl();
+
+      setText(doc, "#contact .form-panel .eyebrow", state.formEyebrow);
+      setText(doc, "#contact .form-panel .section-title", state.formTitle);
+      setText(doc, "#contactForm label[for='name']", state.formNameLabel);
+      setAttribute(doc, "#contactForm #name", "placeholder", state.formNamePlaceholder);
+      setText(doc, "#contactForm label[for='phone']", state.formPhoneLabel);
+      setAttribute(doc, "#contactForm #phone", "placeholder", state.formPhonePlaceholder);
+      setText(doc, "#contactForm label[for='message']", state.formMessageLabel);
+      setAttribute(doc, "#contactForm #message", "placeholder", state.formMessagePlaceholder);
+      setButtonText(doc.querySelector("#contactForm button[type='submit']"), state.formButton);
+      setText(doc, "#formMessage", state.formSuccess);
+
+      setText(doc, ".footer-inner > div:first-child", state.footerText);
+      const footerLinks = doc.querySelectorAll(".footer-links a");
+      if (footerLinks[0]) {
+        footerLinks[0].href = getLineUrl();
+        footerLinks[0].textContent = state.footerLineLabel || "";
+      }
+      if (footerLinks[1]) {
+        footerLinks[1].href = state.instagram || "#";
+        footerLinks[1].textContent = state.footerInstagramLabel || "";
+      }
 
       const projectScript = Array.from(doc.querySelectorAll("script")).find((script) => script.textContent.includes("window.PROJECTS"));
       if (projectScript) {
@@ -1004,18 +1633,91 @@
         const doc = new DOMParser().parseFromString(templateHtml, "text/html");
 
         state = structuredClone(fallbackState);
+        defaultImages = {
+          heroImage: getCssBackgroundUrl(doc, ".hero"),
+          aboutImage: getCssBackgroundUrl(doc, ".about-photo")
+        };
+
+        state.brandMark = doc.querySelector(".brand-mark")?.textContent.trim() || state.brandMark;
+        state.brandName = doc.querySelector(".brand > span:last-child")?.textContent.trim() || state.brandName;
+        const navLinks = doc.querySelectorAll(".nav-links a");
+        state.navHome = navLinks[0]?.textContent.trim() || state.navHome;
+        state.navServices = navLinks[1]?.textContent.trim() || state.navServices;
+        state.navWorks = navLinks[2]?.textContent.trim() || state.navWorks;
+        state.navContact = navLinks[3]?.textContent.trim() || state.navContact;
+
+        state.heroKicker = doc.querySelector(".hero-kicker")?.textContent.trim() || state.heroKicker;
         state.heroTitle = doc.querySelector(".hero h1")?.textContent.trim() || state.heroTitle;
         state.heroText = doc.querySelector(".hero-content > p")?.textContent.trim() || state.heroText;
-        state.heroPrimary = doc.querySelector(".hero .btn-primary")?.childNodes[0]?.textContent.trim() || state.heroPrimary;
-        state.heroSecondary = doc.querySelector(".hero .btn-ghost")?.childNodes[0]?.textContent.trim() || state.heroSecondary;
+        state.heroPrimary = getActionText(doc.querySelector(".hero .btn-primary")) || state.heroPrimary;
+        state.heroSecondary = getActionText(doc.querySelector(".hero .btn-ghost")) || state.heroSecondary;
+        state.heroImage = getInlineBackgroundUrl(doc.querySelector(".hero"));
+
+        const noteCards = doc.querySelectorAll(".note-card");
+        state.heroNote1Title = noteCards[0]?.querySelector("strong")?.textContent.trim() || state.heroNote1Title;
+        state.heroNote1Text = noteCards[0]?.querySelector("span")?.textContent.trim() || state.heroNote1Text;
+        state.heroNote2Title = noteCards[1]?.querySelector("strong")?.textContent.trim() || state.heroNote2Title;
+        state.heroNote2Text = noteCards[1]?.querySelector("span")?.textContent.trim() || state.heroNote2Text;
+        state.heroNote3Title = noteCards[2]?.querySelector("strong")?.textContent.trim() || state.heroNote3Title;
+        state.heroNote3Text = noteCards[2]?.querySelector("span")?.textContent.trim() || state.heroNote3Text;
+
+        state.storyEyebrow = doc.querySelector("#about .eyebrow")?.textContent.trim() || state.storyEyebrow;
         state.aboutTitle = doc.querySelector("#about .section-title")?.textContent.trim() || state.aboutTitle;
+        state.aboutImage = getInlineBackgroundUrl(doc.querySelector(".about-photo"));
 
         const aboutParagraphs = doc.querySelectorAll("#about .story-card > p:not(.eyebrow)");
         state.aboutP1 = aboutParagraphs[0]?.textContent.trim() || state.aboutP1;
         state.aboutP2 = aboutParagraphs[1]?.textContent.trim() || state.aboutP2;
         state.aboutP3 = aboutParagraphs[2]?.textContent.trim() || state.aboutP3;
+        const valuePills = doc.querySelectorAll("#about .value-pill");
+        state.value1 = valuePills[0]?.textContent.trim() || state.value1;
+        state.value2 = valuePills[1]?.textContent.trim() || state.value2;
+        state.value3 = valuePills[2]?.textContent.trim() || state.value3;
+        state.value4 = valuePills[3]?.textContent.trim() || state.value4;
 
+        state.serviceEyebrow = doc.querySelector("#services .service-head .eyebrow")?.textContent.trim() || state.serviceEyebrow;
+        state.serviceTitle = doc.querySelector("#services .service-head .section-title")?.textContent.trim() || state.serviceTitle;
+        state.serviceLead = doc.querySelector("#services .service-head .section-lead")?.textContent.trim() || state.serviceLead;
+        const serviceCards = doc.querySelectorAll("#services .service-card");
+        [
+          ["service1Title", "service1Text", "service1Link"],
+          ["service2Title", "service2Text", "service2Link"],
+          ["service3Title", "service3Text", "service3Link"],
+          ["service4Title", "service4Text", "service4Link"]
+        ].forEach(([titleKey, textKey, linkKey], index) => {
+          const card = serviceCards[index];
+          if (!card) return;
+          state[titleKey] = card.querySelector("h3")?.textContent.trim() || state[titleKey];
+          state[textKey] = card.querySelector("p")?.textContent.trim() || state[textKey];
+          state[linkKey] = getActionText(card.querySelector(".mini-link")) || state[linkKey];
+        });
+
+        const advantageCards = doc.querySelectorAll("#services .advantage-card");
+        [
+          ["advantage1Title", "advantage1Text"],
+          ["advantage2Title", "advantage2Text"],
+          ["advantage3Title", "advantage3Text"]
+        ].forEach(([titleKey, textKey], index) => {
+          const card = advantageCards[index];
+          if (!card) return;
+          state[titleKey] = card.querySelector("h3")?.textContent.trim() || state[titleKey];
+          state[textKey] = card.querySelector("p")?.textContent.trim() || state[textKey];
+        });
+
+        state.worksEyebrow = doc.querySelector("#works .projects-head .eyebrow")?.textContent.trim() || state.worksEyebrow;
+        state.worksTitle = doc.querySelector("#works .projects-head .section-title")?.textContent.trim() || state.worksTitle;
+        state.worksLead = doc.querySelector("#works .projects-head .section-lead")?.textContent.trim() || state.worksLead;
+
+        state.contactEyebrow = doc.querySelector("#contact .contact-panel .eyebrow")?.textContent.trim() || state.contactEyebrow;
+        state.contactTitle = doc.querySelector("#contact .contact-panel .section-title")?.textContent.trim() || state.contactTitle;
         state.contactLead = doc.querySelector("#contact .contact-panel .section-lead")?.textContent.trim() || state.contactLead;
+        const infoLabels = doc.querySelectorAll(".info-list li span");
+        state.infoCompanyLabel = infoLabels[0]?.textContent.trim() || state.infoCompanyLabel;
+        state.infoAreaLabel = infoLabels[1]?.textContent.trim() || state.infoAreaLabel;
+        state.infoLandlineLabel = infoLabels[2]?.textContent.trim() || state.infoLandlineLabel;
+        state.infoMobileLabel = infoLabels[3]?.textContent.trim() || state.infoMobileLabel;
+        state.infoAddressLabel = infoLabels[4]?.textContent.trim() || state.infoAddressLabel;
+        state.infoHoursLabel = infoLabels[5]?.textContent.trim() || state.infoHoursLabel;
         const infoValues = doc.querySelectorAll(".info-list li strong");
         state.company = infoValues[0]?.textContent.trim() || state.company;
         state.serviceArea = infoValues[1]?.textContent.trim() || state.serviceArea;
@@ -1023,9 +1725,28 @@
         state.mobile = infoValues[3]?.textContent.trim() || state.mobile;
         state.address = infoValues[4]?.textContent.trim() || state.address;
         state.hours = infoValues[5]?.textContent.trim() || state.hours;
+        state.lineButton = getActionText(doc.querySelector(".btn-line")) || state.lineButton;
 
-        const instagramButton = Array.from(doc.querySelectorAll(".social-row a")).find((a) => a.textContent.includes("Instagram"));
-        state.instagram = instagramButton?.href || state.instagram;
+        const socialButtons = doc.querySelectorAll(".social-row a");
+        state.instagram = socialButtons[0]?.href || state.instagram;
+        state.instagramLabel = socialButtons[0]?.textContent.trim() || state.instagramLabel;
+        state.mapLabel = socialButtons[1]?.textContent.trim() || state.mapLabel;
+
+        state.formEyebrow = doc.querySelector("#contact .form-panel .eyebrow")?.textContent.trim() || state.formEyebrow;
+        state.formTitle = doc.querySelector("#contact .form-panel .section-title")?.textContent.trim() || state.formTitle;
+        state.formNameLabel = doc.querySelector("#contactForm label[for='name']")?.textContent.trim() || state.formNameLabel;
+        state.formNamePlaceholder = doc.querySelector("#contactForm #name")?.getAttribute("placeholder") || state.formNamePlaceholder;
+        state.formPhoneLabel = doc.querySelector("#contactForm label[for='phone']")?.textContent.trim() || state.formPhoneLabel;
+        state.formPhonePlaceholder = doc.querySelector("#contactForm #phone")?.getAttribute("placeholder") || state.formPhonePlaceholder;
+        state.formMessageLabel = doc.querySelector("#contactForm label[for='message']")?.textContent.trim() || state.formMessageLabel;
+        state.formMessagePlaceholder = doc.querySelector("#contactForm #message")?.getAttribute("placeholder") || state.formMessagePlaceholder;
+        state.formButton = getActionText(doc.querySelector("#contactForm button[type='submit']")) || state.formButton;
+        state.formSuccess = doc.querySelector("#formMessage")?.textContent.trim() || state.formSuccess;
+
+        state.footerText = doc.querySelector(".footer-inner > div:first-child")?.textContent.trim() || state.footerText;
+        const footerLinks = doc.querySelectorAll(".footer-links a");
+        state.footerLineLabel = footerLinks[0]?.textContent.trim() || state.footerLineLabel;
+        state.footerInstagramLabel = footerLinks[1]?.textContent.trim() || state.footerInstagramLabel;
 
         const projectScript = Array.from(doc.querySelectorAll("script")).find((script) => script.textContent.includes("window.PROJECTS"));
         if (projectScript) {
@@ -1038,7 +1759,7 @@
         setStatus("已讀取新版網站");
       } catch (error) {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) state = JSON.parse(saved);
+        if (saved) state = { ...structuredClone(fallbackState), ...JSON.parse(saved) };
         fillForm();
         setStatus("讀取失敗，已載入本機資料");
       }
@@ -1058,6 +1779,33 @@
       button.addEventListener("click", () => window.open(getPreviewTarget(), "_blank", "noopener"));
     });
     document.querySelector("[data-action='reset']").addEventListener("click", loadFromTemplate);
+    document.querySelectorAll("[data-image-key]").forEach((input) => {
+      input.addEventListener("change", () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const key = input.dataset.imageKey;
+          state[key] = reader.result;
+          const hidden = document.querySelector(`[data-key="${key}"]`);
+          if (hidden) hidden.value = reader.result;
+          refreshImagePreviews();
+          saveState();
+          input.value = "";
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+    document.querySelectorAll("[data-clear-image]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const key = button.dataset.clearImage;
+        state[key] = "";
+        const hidden = document.querySelector(`[data-key="${key}"]`);
+        if (hidden) hidden.value = "";
+        refreshImagePreviews();
+        saveState();
+      });
+    });
     document.querySelector("#addProject").addEventListener("click", addProject);
     document.querySelector("#downloadProjects").addEventListener("click", downloadProjectsJs);
     document.querySelector("#downloadHtml").addEventListener("click", downloadHtml);
@@ -1073,8 +1821,9 @@
 
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      state = JSON.parse(saved);
+      state = { ...structuredClone(fallbackState), ...JSON.parse(saved) };
       fillForm();
+      hydrateDefaultImages();
       setStatus("已載入本機資料");
     } else {
       loadFromTemplate();
