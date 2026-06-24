@@ -137,6 +137,12 @@
       margin-bottom: 24px;
     }
 
+    .top-actions {
+      display: grid;
+      gap: 10px;
+      min-width: 190px;
+    }
+
     h1 {
       margin: 0;
       font-size: clamp(28px, 4vw, 44px);
@@ -485,6 +491,11 @@
       background: linear-gradient(135deg, #f7fbfc, #fffdf8);
     }
 
+    details.publish-box summary {
+      cursor: pointer;
+      color: #123c4a;
+    }
+
     .code-area {
       min-height: 160px;
       font-family: Consolas, "Courier New", monospace;
@@ -521,6 +532,10 @@
       .panel-head {
         flex-direction: column;
       }
+
+      .top-actions {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -539,10 +554,10 @@
         <button class="tab" data-panel="details">全站細節</button>
         <button class="tab" data-panel="contact">聯絡資訊</button>
         <button class="tab" data-panel="projects">安裝實績</button>
-        <button class="tab" data-panel="publish">輸出與發布</button>
+        <button class="tab" data-panel="publish">發布網站</button>
       </nav>
       <div class="sidebar-note">
-        這個後台會讀取目前正式網站內容。你改完後可以預覽、下載新版首頁，或用 GitHub 權杖直接發布到 GitHub Pages。
+        直接修改內容，改完按「發布網站」。第一次需要貼一次 GitHub 權杖，之後同一台電腦會記住。
       </div>
     </aside>
 
@@ -550,9 +565,12 @@
       <div class="topbar">
         <div>
           <h1>網站內容管理</h1>
-          <p class="lead">改文字、換聯絡資料、新增施工照片，都集中在這裡處理。儲存會先存在這台電腦的瀏覽器裡，正式更新請到「輸出與發布」下載新版網站。</p>
+          <p class="lead">改文字、換圖片、新增施工照片後，按右邊「發布網站」，正式網站就會更新。</p>
         </div>
-        <div class="status" id="status">正在讀取目前網站</div>
+        <div class="top-actions">
+          <button class="btn green" id="quickPublish">發布網站</button>
+          <div class="status" id="status">正在讀取目前網站</div>
+        </div>
       </div>
 
       <section class="panel active" id="panel-basic">
@@ -1004,21 +1022,22 @@
       <section class="panel" id="panel-publish">
         <div class="panel-head">
           <div>
-            <h2>輸出與發布</h2>
-            <p class="hint">改完內容後可以先下載備份，也可以直接發布到目前的 GitHub Pages 網站。</p>
+            <h2>發布網站</h2>
+            <p class="hint">平常只要按「發布網站」。系統會把目前後台內容更新到 GitHub Pages。</p>
           </div>
         </div>
         <div class="publish-box">
-          <strong>1. 預覽與備份</strong>
-          <p class="hint">這會用目前後台資料產生新版首頁。建議重大修改前先下載備份。</p>
+          <strong>一鍵發布</strong>
+          <p class="hint">改完文字或圖片後，按下方按鈕，等待 1 到 3 分鐘後正式網站就會更新。</p>
           <div class="actions">
-            <button class="btn primary" id="downloadHtml">下載新版 index.html</button>
+            <button class="btn green" id="publishGithub">發布網站</button>
             <button class="btn ghost" data-action="preview">開啟目前預覽</button>
+            <a class="btn ghost" href="https://yunglin10.github.io/po/" target="_blank" rel="noopener">開啟正式網站</a>
           </div>
         </div>
         <div class="publish-box">
-          <strong>2. 直接發布到 GitHub Pages</strong>
-          <p class="hint">完全免費。第一次使用要先建立 GitHub 權杖，權杖請只貼在這個欄位，不要傳給任何人。</p>
+          <strong>第一次設定</strong>
+          <p class="hint">第一次發布需要貼 GitHub 權杖。貼上後同一台電腦會記住，下次就直接按「發布網站」。</p>
           <div class="grid">
             <label class="field">
               <span>GitHub repo</span>
@@ -1034,21 +1053,20 @@
             </label>
           </div>
           <div class="actions">
-            <button class="btn green" id="publishGithub">直接發布到網站</button>
             <a class="btn ghost" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">建立權杖</a>
-            <a class="btn ghost" href="https://yunglin10.github.io/po/" target="_blank" rel="noopener">開啟正式網站</a>
           </div>
-          <p class="hint">權杖建議設定：只給 <strong>yunglin10/po</strong> 這個 repo 的 <strong>Contents: Read and write</strong>。發布後通常 1 到 3 分鐘網站會更新。</p>
+          <p class="hint">權杖建議設定：只給 <strong>yunglin10/po</strong> 這個 repo 的 <strong>Contents: Read and write</strong>。</p>
         </div>
-        <div class="publish-box">
-          <strong>3. Google Sites 嵌入碼</strong>
-          <p class="hint">按下產生後，可以複製整段嵌入碼到 Google Sites 的「嵌入」區塊。嵌入碼很長，正常。</p>
+        <details class="publish-box">
+          <summary><strong>進階功能</strong></summary>
+          <p class="hint">平常不用這裡。需要備份或嵌入 Google Sites 時再打開。</p>
           <div class="actions">
-            <button class="btn dark" id="makeEmbed">產生嵌入碼</button>
+            <button class="btn primary" id="downloadHtml">下載新版 index.html</button>
+            <button class="btn dark" id="makeEmbed">產生 Google Sites 嵌入碼</button>
             <button class="btn ghost" id="copyEmbed">複製嵌入碼</button>
           </div>
           <textarea class="code-area" id="embedCode" spellcheck="false" placeholder="嵌入碼會出現在這裡"></textarea>
-        </div>
+        </details>
       </section>
     </main>
   </div>
@@ -1199,6 +1217,7 @@
     const githubRepo = document.querySelector("#githubRepo");
     const githubToken = document.querySelector("#githubToken");
     const commitMessage = document.querySelector("#commitMessage");
+    const quickPublish = document.querySelector("#quickPublish");
     const cropModal = document.querySelector("#cropModal");
     const cropTitle = document.querySelector("#cropTitle");
     const cropHint = document.querySelector("#cropHint");
@@ -1215,6 +1234,16 @@
 
     function setStatus(message) {
       statusEl.textContent = message;
+    }
+
+    function openPanel(panelName) {
+      const targetTab = document.querySelector(`.tab[data-panel="${panelName}"]`);
+      const targetPanel = document.querySelector(`#panel-${panelName}`);
+      if (!targetTab || !targetPanel) return;
+      document.querySelectorAll(".tab").forEach((item) => item.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach((panel) => panel.classList.remove("active"));
+      targetTab.classList.add("active");
+      targetPanel.classList.add("active");
     }
 
     function getLineUrl() {
@@ -1852,8 +1881,10 @@
 
       const token = githubToken.value.trim();
       if (!token) {
-        setStatus("請先貼上 GitHub 權杖");
-        alert("請先建立 GitHub 權杖，並貼到「GitHub 權杖」欄位。");
+        openPanel("publish");
+        githubToken.focus();
+        setStatus("第一次發布請先貼上 GitHub 權杖");
+        alert("第一次發布需要先貼上 GitHub 權杖。貼一次後，這台電腦會記住，之後就能直接按「發布網站」。");
         return;
       }
 
@@ -1890,7 +1921,7 @@
           throw new Error(updateInfo.message || "發布失敗，請確認權杖權限");
         }
 
-        sessionStorage.setItem(TOKEN_KEY, token);
+        localStorage.setItem(TOKEN_KEY, token);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
         setStatus("已發布，請等 1 到 3 分鐘後重新整理正式網站");
         alert("發布完成！GitHub Pages 通常 1 到 3 分鐘會更新。");
@@ -2053,10 +2084,7 @@
 
     document.querySelectorAll(".tab").forEach((tab) => {
       tab.addEventListener("click", () => {
-        document.querySelectorAll(".tab").forEach((item) => item.classList.remove("active"));
-        document.querySelectorAll(".panel").forEach((panel) => panel.classList.remove("active"));
-        tab.classList.add("active");
-        document.querySelector(`#panel-${tab.dataset.panel}`).classList.add("active");
+        openPanel(tab.dataset.panel);
       });
     });
 
@@ -2158,13 +2186,14 @@
     document.querySelector("#downloadProjects").addEventListener("click", downloadProjectsJs);
     document.querySelector("#downloadHtml").addEventListener("click", downloadHtml);
     document.querySelector("#publishGithub").addEventListener("click", publishToGithub);
+    quickPublish.addEventListener("click", publishToGithub);
     document.querySelector("#makeEmbed").addEventListener("click", makeEmbedCode);
     document.querySelector("#copyEmbed").addEventListener("click", copyEmbedCode);
 
     githubRepo.value = DEFAULT_REPO;
-    githubToken.value = sessionStorage.getItem(TOKEN_KEY) || "";
+    githubToken.value = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || "";
     githubToken.addEventListener("input", () => {
-      sessionStorage.setItem(TOKEN_KEY, githubToken.value.trim());
+      localStorage.setItem(TOKEN_KEY, githubToken.value.trim());
     });
 
     const saved = localStorage.getItem(STORAGE_KEY);
