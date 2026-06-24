@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>一定冷網站簡易後台</title>
+  <style>
+    :root {
+      --ink: #26323a;
+      --muted: #6f7c83;
+      --line: #dbe7e9;
+      --paper: #fffdf8;
+      --soft: #f4eee3;
+      --blue: #d9eef4;
+      --accent: #ff6b55;
+      --accent-dark: #d94f3c;
+      --green: #17b45b;
+      --shadow: 0 18px 50px rgba(39, 51, 58, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(217, 238, 244, 0.7), transparent 32rem),
+        linear-gradient(135deg, #fffdf8 0%, #f7f0e6 100%);
+      color: var(--ink);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 22px;
+      background: rgba(255, 253, 248, 0.84);
+      border-right: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border-radius: 50%;
+      background: #0a4c5e;
+      color: white;
+      font-weight: 900;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.3;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    .tabs {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tab {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      background: transparent;
+      color: var(--muted);
+      text-align: left;
+      cursor: pointer;
+      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+    }
+
+    .tab:hover,
+    .tab.active {
+      background: #123c4a;
+      color: white;
+      transform: translateX(3px);
+    }
+
+    .sidebar-note {
+      margin-top: 24px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      background: white;
+    }
+
+    main {
+      padding: clamp(22px, 4vw, 48px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.15;
+    }
+
+    .lead {
+      max-width: 760px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .status {
+      min-width: 180px;
+      padding: 12px 14px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      text-align: center;
+      box-shadow: 0 10px 26px rgba(39, 51, 58, 0.07);
+    }
+
+    .panel {
+      display: none;
+      padding: clamp(20px, 3vw, 34px);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow);
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .panel + .panel {
+      margin-top: 22px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 32px);
+    }
+
+    .hint {
+      margin: 8px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: #41515a;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid #d5e0e3;
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    textarea {
+      min-height: 112px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #8cc7d6;
+      box-shadow: 0 0 0 4px rgba(140, 199, 214, 0.24);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 11px 18px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 180ms ease, filter 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.06);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn.dark {
+      background: #123c4a;
+      color: white;
+    }
+
+    .btn.green {
+      background: var(--green);
+      color: white;
+    }
+
+    .btn.ghost {
+      background: white;
+      border-color: #d5e0e3;
+      color: #27434c;
+    }
+
+    .btn.danger {
+      background: #fff2ef;
+      border-color: #ffd0c8;
+      color: var(--accent-dark);
+    }
+
+    .project-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .project-editor {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fffdf8;
+    }
+
+    .thumb {
+      min-height: 170px;
+      border-radius: 18px;
+      background: #edf3f4 center / cover no-repeat;
+      border: 1px solid #dbe7e9;
+    }
+
+    .small-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .small-actions .btn {
+      min-height: 38px;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .publish-box {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(135deg, #f7fbfc, #fffdf8);
+    }
+
+    .code-area {
+      min-height: 160px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: static;
+        height: auto;
+      }
+
+      .tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid,
+      .project-editor {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar,
+      .panel-head {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">冷</div>
+        <div>
+          <strong>一定冷簡易後台</strong>
+          <span>新版 HTML 專用</span>
+        </div>
+      </div>
+      <nav class="tabs" aria-label="後台選單">
+        <button class="tab active" data-panel="basic">首頁與故事</button>
+        <button class="tab" data-panel="contact">聯絡資訊</button>
+        <button class="tab" data-panel="projects">安裝實績</button>
+        <button class="tab" data-panel="publish">輸出與發布</button>
+      </nav>
+      <div class="sidebar-note">
+        這個後台會讀取目前正式網站內容。你改完後可以預覽、下載新版首頁，或用 GitHub 權杖直接發布到 GitHub Pages。
+      </div>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div>
+          <h1>網站內容管理</h1>
+          <p class="lead">改文字、換聯絡資料、新增施工照片，都集中在這裡處理。儲存會先存在這台電腦的瀏覽器裡，正式更新請到「輸出與發布」下載新版網站。</p>
+        </div>
+        <div class="status" id="status">正在讀取目前網站</div>
+      </div>
+
+      <section class="panel active" id="panel-basic">
+        <div class="panel-head">
+          <div>
+            <h2>首頁與創辦故事</h2>
+            <p class="hint">修改第一眼看到的大標題、說明文字，以及莊育興的創業故事。</p>
+          </div>
+          <button class="btn ghost" data-action="preview">預覽新版網站</button>
+        </div>
+        <div class="grid">
+          <div class="field full">
+            <label for="heroTitle">首頁大標題</label>
+            <input id="heroTitle" data-key="heroTitle">
+          </div>
+          <div class="field full">
+            <label for="heroText">首頁說明文字</label>
+            <textarea id="heroText" data-key="heroText"></textarea>
+          </div>
+          <div class="field">
+            <label for="heroPrimary">主按鈕文字</label>
+            <input id="heroPrimary" data-key="heroPrimary">
+          </div>
+          <div class="field">
+            <label for="heroSecondary">第二按鈕文字</label>
+            <input id="heroSecondary" data-key="heroSecondary">
+          </div>
+          <div class="field full">
+            <label for="aboutTitle">故事標題</label>
+            <input id="aboutTitle" data-key="aboutTitle">
+          </div>
+          <div class="field full">
+            <label for="aboutP1">故事段落 1</label>
+            <textarea id="aboutP1" data-key="aboutP1"></textarea>
+          </div>
+          <div class="field full">
+            <label for="aboutP2">故事段落 2</label>
+            <textarea id="aboutP2" data-key="aboutP2"></textarea>
+          </div>
+          <div class="field full">
+            <label for="aboutP3">故事段落 3</label>
+            <textarea id="aboutP3" data-key="aboutP3"></textarea>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-action="save">儲存到本機後台</button>
+          <button class="btn ghost" data-action="reset">重新讀取目前網站</button>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-contact">
+        <div class="panel-head">
+          <div>
+            <h2>聯絡資訊</h2>
+            <p class="hint">更新公司名稱、電話、LINE、IG、地址與營業時間。Google 地圖會依地址自動更新。</p>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="field">
+            <label for="company">公司名稱</label>
+            <input id="company" data-key="company">
+          </div>
+          <div class="field">
+            <label for="serviceArea">服務範圍</label>
+            <input id="serviceArea" data-key="serviceArea">
+          </div>
+          <div class="field">
+            <label for="landline">市話</label>
+            <input id="landline" data-key="landline">
+          </div>
+          <div class="field">
+            <label for="mobile">手機 / LINE</label>
+            <input id="mobile" data-key="mobile">
+          </div>
+          <div class="field full">
+            <label for="address">地址</label>
+            <input id="address" data-key="address">
+          </div>
+          <div class="field">
+            <label for="hours">營業時間</label>
+            <input id="hours" data-key="hours">
+          </div>
+          <div class="field">
+            <label for="instagram">Instagram 連結</label>
+            <input id="instagram" data-key="instagram">
+          </div>
+          <div class="field full">
+            <label for="contactLead">聯絡區說明文字</label>
+            <textarea id="contactLead" data-key="contactLead"></textarea>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" data-action="save">儲存到本機後台</button>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-projects">
+        <div class="panel-head">
+          <div>
+            <h2>安裝實績</h2>
+            <p class="hint">新增最近施工照片、保留舊作品。照片可選本機檔案，會轉成單檔 HTML 可用的圖片資料。</p>
+          </div>
+          <button class="btn green" id="addProject">新增一筆案例</button>
+        </div>
+        <div class="project-list" id="projectList"></div>
+        <div class="actions">
+          <button class="btn primary" data-action="save">儲存到本機後台</button>
+          <button class="btn ghost" id="downloadProjects">下載 projects.js</button>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-publish">
+        <div class="panel-head">
+          <div>
+            <h2>輸出與發布</h2>
+            <p class="hint">改完內容後可以先下載備份，也可以直接發布到目前的 GitHub Pages 網站。</p>
+          </div>
+        </div>
+        <div class="publish-box">
+          <strong>1. 預覽與備份</strong>
+          <p class="hint">這會用目前後台資料產生新版首頁。建議重大修改前先下載備份。</p>
+          <div class="actions">
+            <button class="btn primary" id="downloadHtml">下載新版 index.html</button>
+            <button class="btn ghost" data-action="preview">開啟目前預覽</button>
+          </div>
+        </div>
+        <div class="publish-box">
+          <strong>2. 直接發布到 GitHub Pages</strong>
+          <p class="hint">完全免費。第一次使用要先建立 GitHub 權杖，權杖請只貼在這個欄位，不要傳給任何人。</p>
+          <div class="grid">
+            <label class="field">
+              <span>GitHub repo</span>
+              <input id="githubRepo" type="text" value="yunglin10/po" spellcheck="false">
+            </label>
+            <label class="field">
+              <span>Commit 訊息</span>
+              <input id="commitMessage" type="text" value="Update website content">
+            </label>
+            <label class="field full">
+              <span>GitHub 權杖</span>
+              <input id="githubToken" type="password" autocomplete="off" placeholder="貼上 fine-grained token 或 classic token">
+            </label>
+          </div>
+          <div class="actions">
+            <button class="btn green" id="publishGithub">直接發布到網站</button>
+            <a class="btn ghost" href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">建立權杖</a>
+            <a class="btn ghost" href="https://yunglin10.github.io/po/" target="_blank" rel="noopener">開啟正式網站</a>
+          </div>
+          <p class="hint">權杖建議設定：只給 <strong>yunglin10/po</strong> 這個 repo 的 <strong>Contents: Read and write</strong>。發布後通常 1 到 3 分鐘網站會更新。</p>
+        </div>
+        <div class="publish-box">
+          <strong>3. Google Sites 嵌入碼</strong>
+          <p class="hint">按下產生後，可以複製整段嵌入碼到 Google Sites 的「嵌入」區塊。嵌入碼很長，正常。</p>
+          <div class="actions">
+            <button class="btn dark" id="makeEmbed">產生嵌入碼</button>
+            <button class="btn ghost" id="copyEmbed">複製嵌入碼</button>
+          </div>
+          <textarea class="code-area" id="embedCode" spellcheck="false" placeholder="嵌入碼會出現在這裡"></textarea>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "edlcool-admin-state-v1";
+    const TOKEN_KEY = "edlcool-github-token";
+    const DEFAULT_REPO = "yunglin10/po";
+    const DEFAULT_BRANCH = "main";
+    const WEBSITE_FILE = "index.html";
+
+    const fallbackState = {
+      heroTitle: "一定冷 最可靠的冷氣專家！",
+      heroText: "一定冷空調工程有限公司 — 專業安裝、保養、維修與商用空調規劃，用細心施工把每個空間整理到剛剛好的涼爽。",
+      heroPrimary: "聯絡我們",
+      heroSecondary: "查看服務項目",
+      aboutTitle: "莊育興的職人精神，把每一台冷氣都當自己家的在裝",
+      aboutP1: "大家好，我是「一定冷空調」的創辦人莊育興。早年跟著師傅從冷氣業務開始做起，後來轉到安裝與維修第一線，累積了無數現場經驗，也更確定自己想做的是一間讓客人放心託付的冷氣工程行。",
+      aboutP2: "2015 年，我和家人一起創立「一定冷」。這個名字不是口號，而是我對每一位客人的承諾：不誇大、不敷衍，從評估、報價、施工到後續維護，都用實在的態度把問題處理好。",
+      aboutP3: "只要一通電話，我們會協助判斷現場條件，安排合適的安裝、保養或維修方式，讓家裡、店面與辦公室都能回到安心舒適的溫度。",
+      contactLead: "把現場狀況、冷氣品牌或照片傳給我們，可以更快協助判斷適合的安裝、保養或維修方式。",
+      company: "一定冷空調工程有限公司",
+      serviceArea: "桃園全區",
+      landline: "（03）4921522",
+      mobile: "0931379539",
+      address: "桃園市平鎮區環南路二段155號",
+      hours: "週一到週日 08:00 - 20:00",
+      instagram: "https://www.instagram.com/cool__air_chuang?igsh=MTNod2Q4ejg5MTBtdA==",
+      projects: []
+    };
+
+    let state = structuredClone(fallbackState);
+    let templateHtml = "";
+
+    const statusEl = document.querySelector("#status");
+    const projectList = document.querySelector("#projectList");
+    const embedCode = document.querySelector("#embedCode");
+    const githubRepo = document.querySelector("#githubRepo");
+    const githubToken = document.querySelector("#githubToken");
+    const commitMessage = document.querySelector("#commitMessage");
+
+    function setStatus(message) {
+      statusEl.textContent = message;
+    }
+
+    function getLineUrl() {
+      const id = (state.mobile || "").replace(/\s+/g, "");
+      return `https://line.me/ti/p/~${id}`;
+    }
+
+    function getMapUrl() {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(state.address || "")}`;
+    }
+
+    function getMapEmbedUrl() {
+      return `https://www.google.com/maps?q=${encodeURIComponent(state.address || "")}&output=embed`;
+    }
+
+    function getTemplateCandidates() {
+      const isLocal = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+      return isLocal ? ["index-single.html", "index.html"] : ["index.html", "index-single.html"];
+    }
+
+    async function fetchTemplateHtml() {
+      const candidates = getTemplateCandidates();
+      let lastError = null;
+
+      for (const filename of candidates) {
+        try {
+          const response = await fetch(filename, { cache: "no-store" });
+          if (!response.ok) {
+            lastError = new Error(`${filename} 讀取失敗：${response.status}`);
+            continue;
+          }
+          templateHtml = await response.text();
+          return templateHtml;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+
+      throw lastError || new Error("找不到可讀取的網站首頁檔案");
+    }
+
+    function getPreviewTarget() {
+      return getTemplateCandidates()[0];
+    }
+
+    function collectForm() {
+      document.querySelectorAll("[data-key]").forEach((field) => {
+        state[field.dataset.key] = field.value;
+      });
+    }
+
+    function fillForm() {
+      document.querySelectorAll("[data-key]").forEach((field) => {
+        field.value = state[field.dataset.key] || "";
+      });
+      renderProjectsEditor();
+    }
+
+    function saveState() {
+      collectForm();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      setStatus("已儲存到本機");
+    }
+
+    function slugify(value) {
+      return String(value || "project")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+        .replace(/^-+|-+$/g, "") || `project-${Date.now()}`;
+    }
+
+    function renderProjectsEditor() {
+      projectList.innerHTML = "";
+
+      if (!Array.isArray(state.projects)) {
+        state.projects = [];
+      }
+
+      state.projects.forEach((project, index) => {
+        const card = document.createElement("article");
+        card.className = "project-editor";
+
+        const thumbWrap = document.createElement("div");
+        const thumb = document.createElement("div");
+        thumb.className = "thumb";
+        thumb.style.backgroundImage = project.imageUrl ? `url("${project.imageUrl}")` : "";
+        thumbWrap.append(thumb);
+
+        const upload = document.createElement("input");
+        upload.type = "file";
+        upload.accept = "image/*";
+        upload.addEventListener("change", () => {
+          const file = upload.files && upload.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            project.imageUrl = reader.result;
+            renderProjectsEditor();
+            saveState();
+          };
+          reader.readAsDataURL(file);
+        });
+
+        const body = document.createElement("div");
+        body.innerHTML = `
+          <div class="grid">
+            <div class="field">
+              <label>案例 ID</label>
+              <input data-project-field="id" value="${escapeAttribute(project.id || "")}">
+            </div>
+            <div class="field">
+              <label>案例標題</label>
+              <input data-project-field="title" value="${escapeAttribute(project.title || "")}">
+            </div>
+            <div class="field full">
+              <label>案例說明</label>
+              <textarea data-project-field="description">${escapeHtml(project.description || "")}</textarea>
+            </div>
+            <div class="field full">
+              <label>圖片路徑或圖片資料</label>
+              <input data-project-field="imageUrl" value="${escapeAttribute(project.imageUrl || "")}">
+            </div>
+          </div>
+        `;
+
+        body.querySelectorAll("[data-project-field]").forEach((field) => {
+          field.addEventListener("input", () => {
+            project[field.dataset.projectField] = field.value;
+            if (field.dataset.projectField === "imageUrl") {
+              thumb.style.backgroundImage = field.value ? `url("${field.value}")` : "";
+            }
+          });
+        });
+
+        const smallActions = document.createElement("div");
+        smallActions.className = "small-actions";
+
+        const uploadLabel = document.createElement("label");
+        uploadLabel.className = "btn ghost";
+        uploadLabel.textContent = "選擇照片";
+        uploadLabel.append(upload);
+        upload.style.display = "none";
+
+        const duplicate = document.createElement("button");
+        duplicate.className = "btn ghost";
+        duplicate.type = "button";
+        duplicate.textContent = "複製";
+        duplicate.addEventListener("click", () => {
+          state.projects.splice(index + 1, 0, {
+            ...project,
+            id: `${slugify(project.id)}-copy-${Date.now()}`
+          });
+          renderProjectsEditor();
+          saveState();
+        });
+
+        const remove = document.createElement("button");
+        remove.className = "btn danger";
+        remove.type = "button";
+        remove.textContent = "刪除";
+        remove.addEventListener("click", () => {
+          state.projects.splice(index, 1);
+          renderProjectsEditor();
+          saveState();
+        });
+
+        smallActions.append(uploadLabel, duplicate, remove);
+        body.append(smallActions);
+        card.append(thumbWrap, body);
+        projectList.append(card);
+      });
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeAttribute(value) {
+      return escapeHtml(value).replace(/\n/g, " ");
+    }
+
+    function setButtonText(anchor, text) {
+      if (!anchor) return;
+      anchor.innerHTML = `${escapeHtml(text)} <span class="arrow" aria-hidden="true">→</span>`;
+    }
+
+    function setText(doc, selector, text) {
+      const element = doc.querySelector(selector);
+      if (element) element.textContent = text || "";
+    }
+
+    function updateTemplate(html) {
+      const doc = new DOMParser().parseFromString(html, "text/html");
+
+      setText(doc, ".hero h1", state.heroTitle);
+      setText(doc, ".hero-content > p", state.heroText);
+      setButtonText(doc.querySelector(".hero .btn-primary"), state.heroPrimary);
+      setButtonText(doc.querySelector(".hero .btn-ghost"), state.heroSecondary);
+
+      setText(doc, "#about .section-title", state.aboutTitle);
+      const aboutParagraphs = doc.querySelectorAll("#about .story-card > p:not(.eyebrow)");
+      [state.aboutP1, state.aboutP2, state.aboutP3].forEach((text, index) => {
+        if (aboutParagraphs[index]) aboutParagraphs[index].textContent = text || "";
+      });
+
+      setText(doc, "#contact .contact-panel .section-lead", state.contactLead);
+      const infoValues = doc.querySelectorAll(".info-list li strong");
+      [state.company, state.serviceArea, state.landline, state.mobile, state.address, state.hours].forEach((text, index) => {
+        if (infoValues[index]) infoValues[index].textContent = text || "";
+      });
+
+      const lineButton = doc.querySelector(".btn-line");
+      if (lineButton) lineButton.href = getLineUrl();
+
+      const instagramButton = Array.from(doc.querySelectorAll(".social-row a")).find((a) => a.textContent.includes("Instagram"));
+      if (instagramButton) instagramButton.href = state.instagram || "#";
+
+      const mapButton = Array.from(doc.querySelectorAll(".social-row a")).find((a) => a.textContent.includes("Google"));
+      if (mapButton) mapButton.href = getMapUrl();
+
+      const mapFrame = doc.querySelector(".map-frame iframe");
+      if (mapFrame) mapFrame.src = getMapEmbedUrl();
+
+      const projectScript = Array.from(doc.querySelectorAll("script")).find((script) => script.textContent.includes("window.PROJECTS"));
+      if (projectScript) {
+        projectScript.textContent = `\n    window.PROJECTS = ${JSON.stringify(state.projects || [], null, 2)};\n  `;
+      }
+
+      return "<!doctype html>\n" + doc.documentElement.outerHTML;
+    }
+
+    async function buildHtml() {
+      collectForm();
+      if (!templateHtml) {
+        await fetchTemplateHtml();
+      }
+      return updateTemplate(templateHtml);
+    }
+
+    function downloadFile(filename, content, type = "text/plain;charset=utf-8") {
+      const blob = new Blob([content], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function downloadProjectsJs() {
+      collectForm();
+      const content = `// 安裝實績資料庫\nwindow.PROJECTS = ${JSON.stringify(state.projects || [], null, 2)};\n`;
+      downloadFile("projects.js", content, "application/javascript;charset=utf-8");
+    }
+
+    async function downloadHtml() {
+      const html = await buildHtml();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      downloadFile("index.html", html, "text/html;charset=utf-8");
+      setStatus("新版 HTML 已下載");
+    }
+
+    async function makeEmbedCode() {
+      const html = await buildHtml();
+      embedCode.value = html;
+      setStatus("嵌入碼已產生");
+    }
+
+    async function copyEmbedCode() {
+      if (!embedCode.value) {
+        await makeEmbedCode();
+      }
+      await navigator.clipboard.writeText(embedCode.value);
+      setStatus("嵌入碼已複製");
+    }
+
+    function parseRepository(value) {
+      const cleaned = (value || DEFAULT_REPO)
+        .trim()
+        .replace(/^https:\/\/github\.com\//, "")
+        .replace(/\.git$/, "")
+        .replace(/^\/+|\/+$/g, "");
+      const parts = cleaned.split("/");
+      if (parts.length !== 2 || !parts[0] || !parts[1]) {
+        throw new Error("GitHub repo 格式請填 owner/repo，例如 yunglin10/po");
+      }
+      return { owner: parts[0], repo: parts[1] };
+    }
+
+    function githubHeaders(token) {
+      return {
+        "Accept": "application/vnd.github+json",
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-GitHub-Api-Version": "2022-11-28"
+      };
+    }
+
+    function toBase64Utf8(text) {
+      const bytes = new TextEncoder().encode(text);
+      let binary = "";
+      const chunkSize = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        const chunk = bytes.subarray(i, i + chunkSize);
+        binary += String.fromCharCode(...chunk);
+      }
+      return btoa(binary);
+    }
+
+    async function readGitHubJson(response) {
+      const text = await response.text();
+      try {
+        return text ? JSON.parse(text) : {};
+      } catch (error) {
+        return { message: text || response.statusText };
+      }
+    }
+
+    async function publishToGithub() {
+      collectForm();
+
+      const token = githubToken.value.trim();
+      if (!token) {
+        setStatus("請先貼上 GitHub 權杖");
+        alert("請先建立 GitHub 權杖，並貼到「GitHub 權杖」欄位。");
+        return;
+      }
+
+      try {
+        const { owner, repo } = parseRepository(githubRepo.value);
+        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${WEBSITE_FILE}`;
+        const message = (commitMessage.value || "Update website content").trim();
+
+        setStatus("正在產生新版首頁...");
+        const html = await buildHtml();
+
+        setStatus("正在讀取 GitHub 目前檔案...");
+        const fileResponse = await fetch(`${apiUrl}?ref=${encodeURIComponent(DEFAULT_BRANCH)}`, {
+          headers: githubHeaders(token)
+        });
+        const fileInfo = await readGitHubJson(fileResponse);
+        if (!fileResponse.ok) {
+          throw new Error(fileInfo.message || "讀取 GitHub 檔案失敗");
+        }
+
+        setStatus("正在發布到 GitHub Pages...");
+        const updateResponse = await fetch(apiUrl, {
+          method: "PUT",
+          headers: githubHeaders(token),
+          body: JSON.stringify({
+            message,
+            content: toBase64Utf8(html),
+            sha: fileInfo.sha,
+            branch: DEFAULT_BRANCH
+          })
+        });
+        const updateInfo = await readGitHubJson(updateResponse);
+        if (!updateResponse.ok) {
+          throw new Error(updateInfo.message || "發布失敗，請確認權杖權限");
+        }
+
+        sessionStorage.setItem(TOKEN_KEY, token);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        setStatus("已發布，請等 1 到 3 分鐘後重新整理正式網站");
+        alert("發布完成！GitHub Pages 通常 1 到 3 分鐘會更新。");
+      } catch (error) {
+        console.error(error);
+        setStatus("發布失敗");
+        alert(`發布失敗：${error.message}`);
+      }
+    }
+
+    function addProject() {
+      collectForm();
+      state.projects.unshift({
+        id: `project-${Date.now()}`,
+        title: "新的施工案例",
+        description: "請輸入施工地點、冷氣類型、現場重點與完工說明。",
+        imageUrl: ""
+      });
+      renderProjectsEditor();
+      saveState();
+    }
+
+    async function loadFromTemplate() {
+      try {
+        await fetchTemplateHtml();
+        const doc = new DOMParser().parseFromString(templateHtml, "text/html");
+
+        state = structuredClone(fallbackState);
+        state.heroTitle = doc.querySelector(".hero h1")?.textContent.trim() || state.heroTitle;
+        state.heroText = doc.querySelector(".hero-content > p")?.textContent.trim() || state.heroText;
+        state.heroPrimary = doc.querySelector(".hero .btn-primary")?.childNodes[0]?.textContent.trim() || state.heroPrimary;
+        state.heroSecondary = doc.querySelector(".hero .btn-ghost")?.childNodes[0]?.textContent.trim() || state.heroSecondary;
+        state.aboutTitle = doc.querySelector("#about .section-title")?.textContent.trim() || state.aboutTitle;
+
+        const aboutParagraphs = doc.querySelectorAll("#about .story-card > p:not(.eyebrow)");
+        state.aboutP1 = aboutParagraphs[0]?.textContent.trim() || state.aboutP1;
+        state.aboutP2 = aboutParagraphs[1]?.textContent.trim() || state.aboutP2;
+        state.aboutP3 = aboutParagraphs[2]?.textContent.trim() || state.aboutP3;
+
+        state.contactLead = doc.querySelector("#contact .contact-panel .section-lead")?.textContent.trim() || state.contactLead;
+        const infoValues = doc.querySelectorAll(".info-list li strong");
+        state.company = infoValues[0]?.textContent.trim() || state.company;
+        state.serviceArea = infoValues[1]?.textContent.trim() || state.serviceArea;
+        state.landline = infoValues[2]?.textContent.trim() || state.landline;
+        state.mobile = infoValues[3]?.textContent.trim() || state.mobile;
+        state.address = infoValues[4]?.textContent.trim() || state.address;
+        state.hours = infoValues[5]?.textContent.trim() || state.hours;
+
+        const instagramButton = Array.from(doc.querySelectorAll(".social-row a")).find((a) => a.textContent.includes("Instagram"));
+        state.instagram = instagramButton?.href || state.instagram;
+
+        const projectScript = Array.from(doc.querySelectorAll("script")).find((script) => script.textContent.includes("window.PROJECTS"));
+        if (projectScript) {
+          const fakeWindow = {};
+          new Function("window", `${projectScript.textContent}; return window.PROJECTS || [];`)(fakeWindow);
+          state.projects = fakeWindow.PROJECTS || [];
+        }
+
+        fillForm();
+        setStatus("已讀取新版網站");
+      } catch (error) {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) state = JSON.parse(saved);
+        fillForm();
+        setStatus("讀取失敗，已載入本機資料");
+      }
+    }
+
+    document.querySelectorAll(".tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((item) => item.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach((panel) => panel.classList.remove("active"));
+        tab.classList.add("active");
+        document.querySelector(`#panel-${tab.dataset.panel}`).classList.add("active");
+      });
+    });
+
+    document.querySelectorAll("[data-action='save']").forEach((button) => button.addEventListener("click", saveState));
+    document.querySelectorAll("[data-action='preview']").forEach((button) => {
+      button.addEventListener("click", () => window.open(getPreviewTarget(), "_blank", "noopener"));
+    });
+    document.querySelector("[data-action='reset']").addEventListener("click", loadFromTemplate);
+    document.querySelector("#addProject").addEventListener("click", addProject);
+    document.querySelector("#downloadProjects").addEventListener("click", downloadProjectsJs);
+    document.querySelector("#downloadHtml").addEventListener("click", downloadHtml);
+    document.querySelector("#publishGithub").addEventListener("click", publishToGithub);
+    document.querySelector("#makeEmbed").addEventListener("click", makeEmbedCode);
+    document.querySelector("#copyEmbed").addEventListener("click", copyEmbedCode);
+
+    githubRepo.value = DEFAULT_REPO;
+    githubToken.value = sessionStorage.getItem(TOKEN_KEY) || "";
+    githubToken.addEventListener("input", () => {
+      sessionStorage.setItem(TOKEN_KEY, githubToken.value.trim());
+    });
+
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      state = JSON.parse(saved);
+      fillForm();
+      setStatus("已載入本機資料");
+    } else {
+      loadFromTemplate();
+    }
+  </script>
+</body>
+</html>
