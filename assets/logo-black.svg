@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 260" role="img" aria-labelledby="title desc">
+  <title id="title">一定冷空調商標</title>
+  <desc id="desc">黑色線條六角外框、冷風符號與 COOL 字樣。</desc>
+  <g fill="none" stroke="#111111" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M128 78 L42 108 L42 184 L260 238 L478 184 L478 108 L392 78" stroke-width="10"/>
+    <path d="M242 48 C274 48 274 18 246 18" stroke-width="12"/>
+    <path d="M230 70 C198 70 198 42 228 42 H276 C306 42 306 70 276 70" stroke-width="12"/>
+    <path d="M242 94 C266 94 266 120 242 120" stroke-width="12"/>
+    <path d="M288 96 C312 96 312 120 288 120" stroke-width="12"/>
+  </g>
+  <text x="260" y="166" text-anchor="middle"
+        fill="#111111"
+        font-family="Georgia, 'Times New Roman', serif"
+        font-size="44"
+        font-weight="700"
+        letter-spacing="9">COOL</text>
+</svg>
