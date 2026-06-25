@@ -327,6 +327,71 @@
       border: 1px solid #dbe7e9;
     }
 
+    .project-image-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .project-image-card {
+      min-height: 94px;
+      display: grid;
+      align-content: end;
+      gap: 6px;
+      padding: 8px;
+      border: 1px solid #dbe7e9;
+      border-radius: 14px;
+      background: #edf3f4 center / cover no-repeat;
+      overflow: hidden;
+    }
+
+    .project-image-card.is-cover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(255, 107, 85, 0.16);
+    }
+
+    .project-image-card .small-actions {
+      margin: 0;
+      gap: 6px;
+    }
+
+    .project-image-card .btn {
+      min-height: 30px;
+      padding: 6px 9px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .price-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .price-editor {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fffdf8;
+    }
+
+    .price-row-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .price-row {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: end;
+      padding: 12px;
+      border: 1px solid #e5edf0;
+      border-radius: 16px;
+      background: white;
+    }
+
     .image-field {
       display: grid;
       grid-template-columns: 220px minmax(0, 1fr);
@@ -519,8 +584,13 @@
 
       .grid,
       .project-editor,
-      .image-field {
+      .image-field,
+      .price-row {
         grid-template-columns: 1fr;
+      }
+
+      .project-image-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .crop-body,
@@ -553,6 +623,7 @@
         <button class="tab active" data-panel="basic">首頁與故事</button>
         <button class="tab" data-panel="details">全站細節</button>
         <button class="tab" data-panel="contact">聯絡資訊</button>
+        <button class="tab" data-panel="pricing">報價目錄</button>
         <button class="tab" data-panel="projects">安裝實績</button>
         <button class="tab" data-panel="publish">發布網站</button>
       </nav>
@@ -649,6 +720,10 @@
           <div class="field">
             <label for="navServices">選單：服務項目</label>
             <input id="navServices" data-key="navServices">
+          </div>
+          <div class="field">
+            <label for="navPricing">選單：報價目錄</label>
+            <input id="navPricing" data-key="navPricing">
           </div>
           <div class="field">
             <label for="navWorks">選單：安裝實績</label>
@@ -1004,11 +1079,43 @@
         </div>
       </section>
 
+      <section class="panel" id="panel-pricing">
+        <div class="panel-head">
+          <div>
+            <h2>報價目錄</h2>
+            <p class="hint">整理常見清洗保養價格。每個項目可以有多個價格列，例如小台、大台或現場估價。</p>
+          </div>
+          <button class="btn green" id="addPriceItem">新增報價項目</button>
+        </div>
+        <div class="grid">
+          <div class="field">
+            <label for="pricingEyebrow">報價區小標</label>
+            <input id="pricingEyebrow" data-key="pricingEyebrow">
+          </div>
+          <div class="field">
+            <label for="pricingTitle">報價區標題</label>
+            <input id="pricingTitle" data-key="pricingTitle">
+          </div>
+          <div class="field full">
+            <label for="pricingLead">報價區說明</label>
+            <textarea id="pricingLead" data-key="pricingLead"></textarea>
+          </div>
+          <div class="field full">
+            <label for="pricingNote">報價底部提醒</label>
+            <textarea id="pricingNote" data-key="pricingNote"></textarea>
+          </div>
+        </div>
+        <div class="price-list" id="priceList"></div>
+        <div class="actions">
+          <button class="btn primary" data-action="save">儲存到本機後台</button>
+        </div>
+      </section>
+
       <section class="panel" id="panel-projects">
         <div class="panel-head">
           <div>
             <h2>安裝實績</h2>
-            <p class="hint">新增最近施工照片、保留舊作品。照片可選本機檔案，上傳後會先裁剪，再轉成單檔 HTML 可用的圖片資料。</p>
+            <p class="hint">每個案例可以新增多張照片，也可以寫詳細內容。照片可選本機檔案，上傳後會先裁剪，再轉成單檔 HTML 可用的圖片資料。</p>
           </div>
           <button class="btn green" id="addProject">新增一筆案例</button>
         </div>
@@ -1121,6 +1228,7 @@
       brandName: "一定冷空調工程有限公司",
       navHome: "主頁",
       navServices: "服務項目",
+      navPricing: "報價目錄",
       navWorks: "安裝實績",
       navContact: "聯絡資訊",
       heroKicker: "TAOYUAN AIR CONDITIONING",
@@ -1166,9 +1274,68 @@
       advantage2Text: "大型空調可依企業需求提供短期出租、長期使用或買斷方案，降低一次性設備成本。",
       advantage3Title: "家用冷氣超優惠",
       advantage3Text: "與各大知名品牌配合直供，替家庭用戶爭取實在價格，並由熟悉現場的師傅細心施工。",
+      pricingEyebrow: "PRICE",
+      pricingTitle: "清洗保養報價目錄",
+      pricingLead: "常見清洗保養項目先列出參考價格，實際仍會依機型、現場環境與髒污程度確認。",
+      pricingNote: "箱型冷氣、水塔側洗、冰水機與大型設備需依現場狀況估價，歡迎先傳照片給我們判斷。",
+      priceItems: [
+        {
+          id: "wall-mounted-cleaning",
+          category: "清洗保養",
+          title: "壁掛式冷氣清洗保養",
+          description: "室內機整組清洗，包含外殼、濾網、冷排與排水檢查，適合一般住家定期保養。",
+          prices: [
+            { label: "小台", value: "NT$2,000" },
+            { label: "大台", value: "NT$2,500" }
+          ],
+          note: "依機型與髒污程度調整。"
+        },
+        {
+          id: "concealed-indoor-cleaning",
+          category: "清洗保養",
+          title: "吊隱式內機清洗保養",
+          description: "適合天花板隱藏式室內機，會確認維修孔、排水與施工空間後安排。",
+          prices: [
+            { label: "小台", value: "NT$2,000" },
+            { label: "大台", value: "NT$3,000" }
+          ],
+          note: "需確認現場是否方便拆洗。"
+        },
+        {
+          id: "window-ac-cleaning",
+          category: "清洗保養",
+          title: "窗型冷氣清洗保養",
+          description: "窗型冷氣拆洗與保養，改善出風、異味與冷房效率，拆卸難度會影響報價。",
+          prices: [
+            { label: "小台", value: "NT$2,000" },
+            { label: "大台", value: "NT$2,500" }
+          ],
+          note: "依安裝位置與拆卸難度確認。"
+        },
+        {
+          id: "package-water-tower",
+          category: "大型設備",
+          title: "箱型冷氣＋水塔側洗",
+          description: "商用箱型設備、水塔與周邊系統清洗，適合店面、廠辦與大型空間。",
+          prices: [
+            { label: "現場估價", value: "依現場評估" }
+          ],
+          note: "請先提供照片、設備尺寸與位置。"
+        },
+        {
+          id: "chiller-maintenance",
+          category: "大型設備",
+          title: "冰水機保養",
+          description: "冰水主機及相關系統保養，依設備噸數、系統配置與保養範圍規劃。",
+          prices: [
+            { label: "專案報價", value: "依機型評估" }
+          ],
+          note: "歡迎先傳設備銘牌與現場照片。"
+        }
+      ],
       worksEyebrow: "WORKS",
       worksTitle: "安裝實績",
-      worksLead: "這裡會保留近期與過往施工紀錄。之後只要在 projects.js 新增一筆資料，就能自動出現在相簿網格中。",
+      worksLead: "這裡會保留近期與過往施工紀錄。每個案例都可以放多張照片，點進去就能查看完整說明與相簿。",
       contactLead: "把現場狀況、冷氣品牌或照片傳給我們，可以更快協助判斷適合的安裝、保養或維修方式。",
       company: "一定冷空調工程有限公司",
       serviceArea: "桃園全區",
@@ -1213,6 +1380,7 @@
 
     const statusEl = document.querySelector("#status");
     const projectList = document.querySelector("#projectList");
+    const priceList = document.querySelector("#priceList");
     const embedCode = document.querySelector("#embedCode");
     const githubRepo = document.querySelector("#githubRepo");
     const githubToken = document.querySelector("#githubToken");
@@ -1322,6 +1490,7 @@
         field.value = state[field.dataset.key] || "";
       });
       refreshImagePreviews();
+      renderPriceEditor();
       renderProjectsEditor();
     }
 
@@ -1463,6 +1632,140 @@
       saveState();
     }
 
+    function createPriceItem() {
+      return {
+        id: `price-${Date.now()}`,
+        category: "清洗保養",
+        title: "新的報價項目",
+        description: "請輸入這個項目的服務內容與適用情境。",
+        prices: [
+          { label: "小台", value: "NT$2,000" },
+          { label: "大台", value: "NT$2,500" }
+        ],
+        note: "實際價格以現場狀況確認。"
+      };
+    }
+
+    function renderPriceEditor() {
+      if (!priceList) return;
+      priceList.innerHTML = "";
+
+      if (!Array.isArray(state.priceItems)) {
+        state.priceItems = [];
+      }
+
+      state.priceItems.forEach((item, index) => {
+        if (!Array.isArray(item.prices)) item.prices = [];
+
+        const card = document.createElement("article");
+        card.className = "price-editor";
+        card.innerHTML = `
+          <div class="grid">
+            <div class="field">
+              <label>項目 ID</label>
+              <input data-price-field="id" value="${escapeAttribute(item.id || "")}">
+            </div>
+            <div class="field">
+              <label>分類</label>
+              <input data-price-field="category" value="${escapeAttribute(item.category || "")}">
+            </div>
+            <div class="field full">
+              <label>項目名稱</label>
+              <input data-price-field="title" value="${escapeAttribute(item.title || "")}">
+            </div>
+            <div class="field full">
+              <label>項目說明</label>
+              <textarea data-price-field="description">${escapeHtml(item.description || "")}</textarea>
+            </div>
+            <div class="field full">
+              <label>提醒文字</label>
+              <input data-price-field="note" value="${escapeAttribute(item.note || "")}">
+            </div>
+          </div>
+          <div class="subsection">
+            <h3>價格列</h3>
+            <p>例如「小台 NT$2,000」、「大台 NT$2,500」，大型設備也可以填「現場估價」。</p>
+          </div>
+          <div class="price-row-list"></div>
+          <div class="small-actions">
+            <button class="btn ghost" type="button" data-price-action="add-row">新增價格列</button>
+            <button class="btn ghost" type="button" data-price-action="duplicate">複製項目</button>
+            <button class="btn danger" type="button" data-price-action="remove">刪除項目</button>
+          </div>
+        `;
+
+        card.querySelectorAll("[data-price-field]").forEach((field) => {
+          field.addEventListener("input", () => {
+            item[field.dataset.priceField] = field.value;
+          });
+        });
+
+        const rowList = card.querySelector(".price-row-list");
+        function renderRows() {
+          rowList.innerHTML = "";
+          item.prices.forEach((price, priceIndex) => {
+            const row = document.createElement("div");
+            row.className = "price-row";
+            row.innerHTML = `
+              <div class="field">
+                <label>名稱</label>
+                <input data-price-row-field="label" value="${escapeAttribute(price.label || "")}">
+              </div>
+              <div class="field">
+                <label>價格</label>
+                <input data-price-row-field="value" value="${escapeAttribute(price.value || "")}">
+              </div>
+              <button class="btn danger" type="button">刪除</button>
+            `;
+
+            row.querySelectorAll("[data-price-row-field]").forEach((field) => {
+              field.addEventListener("input", () => {
+                price[field.dataset.priceRowField] = field.value;
+              });
+            });
+            row.querySelector("button").addEventListener("click", () => {
+              item.prices.splice(priceIndex, 1);
+              renderRows();
+              saveState();
+            });
+            rowList.append(row);
+          });
+        }
+
+        card.querySelector("[data-price-action='add-row']").addEventListener("click", () => {
+          item.prices.push({ label: "項目", value: "請洽詢" });
+          renderRows();
+          saveState();
+        });
+        card.querySelector("[data-price-action='duplicate']").addEventListener("click", () => {
+          state.priceItems.splice(index + 1, 0, {
+            ...structuredClone(item),
+            id: `${slugify(item.id || "price")}-copy-${Date.now()}`
+          });
+          renderPriceEditor();
+          saveState();
+        });
+        card.querySelector("[data-price-action='remove']").addEventListener("click", () => {
+          state.priceItems.splice(index, 1);
+          renderPriceEditor();
+          saveState();
+        });
+
+        renderRows();
+        priceList.append(card);
+      });
+    }
+
+    function normalizeProjectImages(project) {
+      if (!Array.isArray(project.images)) {
+        project.images = project.imageUrl ? [project.imageUrl] : [];
+      }
+      project.images = project.images.filter(Boolean);
+      if (!project.imageUrl && project.images[0]) {
+        project.imageUrl = project.images[0];
+      }
+    }
+
     function renderProjectsEditor() {
       projectList.innerHTML = "";
 
@@ -1471,6 +1774,8 @@
       }
 
       state.projects.forEach((project, index) => {
+        normalizeProjectImages(project);
+
         const card = document.createElement("article");
         card.className = "project-editor";
 
@@ -1489,7 +1794,9 @@
           openImageCropper(file, {
             ...cropPresetForKey("projectImage"),
             onApply: (imageUrl) => {
-              project.imageUrl = imageUrl;
+              normalizeProjectImages(project);
+              project.images.push(imageUrl);
+              if (!project.imageUrl) project.imageUrl = imageUrl;
               renderProjectsEditor();
               saveState();
             }
@@ -1513,7 +1820,11 @@
               <textarea data-project-field="description">${escapeHtml(project.description || "")}</textarea>
             </div>
             <div class="field full">
-              <label>圖片路徑或圖片資料</label>
+              <label>詳細內容</label>
+              <textarea data-project-field="detail">${escapeHtml(project.detail || "")}</textarea>
+            </div>
+            <div class="field full">
+              <label>封面圖片路徑或圖片資料</label>
               <input data-project-field="imageUrl" value="${escapeAttribute(project.imageUrl || "")}">
             </div>
           </div>
@@ -1523,9 +1834,52 @@
           field.addEventListener("input", () => {
             project[field.dataset.projectField] = field.value;
             if (field.dataset.projectField === "imageUrl") {
+              normalizeProjectImages(project);
+              if (field.value) {
+                project.images = [field.value, ...project.images.filter((image) => image !== field.value)];
+              } else {
+                project.images = project.images.filter(Boolean);
+              }
               thumb.style.backgroundImage = field.value ? `url("${field.value}")` : "";
             }
           });
+        });
+
+        const imageGrid = document.createElement("div");
+        imageGrid.className = "project-image-grid";
+        project.images.forEach((imageUrl, imageIndex) => {
+          const imageCard = document.createElement("div");
+          imageCard.className = `project-image-card${imageUrl === project.imageUrl ? " is-cover" : ""}`;
+          imageCard.style.backgroundImage = `url("${imageUrl}")`;
+
+          const imageActions = document.createElement("div");
+          imageActions.className = "small-actions";
+
+          const setCover = document.createElement("button");
+          setCover.className = "btn ghost";
+          setCover.type = "button";
+          setCover.textContent = imageUrl === project.imageUrl ? "封面" : "設封面";
+          setCover.addEventListener("click", () => {
+            project.imageUrl = imageUrl;
+            project.images = [imageUrl, ...project.images.filter((item) => item !== imageUrl)];
+            renderProjectsEditor();
+            saveState();
+          });
+
+          const removeImage = document.createElement("button");
+          removeImage.className = "btn danger";
+          removeImage.type = "button";
+          removeImage.textContent = "刪除";
+          removeImage.addEventListener("click", () => {
+            project.images.splice(imageIndex, 1);
+            project.imageUrl = project.images[0] || "";
+            renderProjectsEditor();
+            saveState();
+          });
+
+          imageActions.append(setCover, removeImage);
+          imageCard.append(imageActions);
+          imageGrid.append(imageCard);
         });
 
         const smallActions = document.createElement("div");
@@ -1533,7 +1887,7 @@
 
         const uploadLabel = document.createElement("label");
         uploadLabel.className = "btn ghost";
-        uploadLabel.textContent = "選擇照片";
+        uploadLabel.textContent = "新增照片";
         uploadLabel.append(upload);
         upload.style.display = "none";
 
@@ -1543,7 +1897,7 @@
         duplicate.textContent = "複製";
         duplicate.addEventListener("click", () => {
           state.projects.splice(index + 1, 0, {
-            ...project,
+            ...structuredClone(project),
             id: `${slugify(project.id)}-copy-${Date.now()}`
           });
           renderProjectsEditor();
@@ -1561,6 +1915,7 @@
         });
 
         smallActions.append(uploadLabel, duplicate, remove);
+        body.append(imageGrid);
         body.append(smallActions);
         card.append(thumbWrap, body);
         projectList.append(card);
@@ -1650,7 +2005,7 @@
       setText(doc, ".brand-mark", state.brandMark);
       setText(doc, ".brand > span:last-child", state.brandName);
       const navLinks = doc.querySelectorAll(".nav-links a");
-      [state.navHome, state.navServices, state.navWorks, state.navContact].forEach((text, index) => {
+      [state.navHome, state.navServices, state.navPricing, state.navWorks, state.navContact].forEach((text, index) => {
         if (navLinks[index]) navLinks[index].textContent = text || "";
       });
 
@@ -1719,6 +2074,11 @@
         if (textEl) textEl.textContent = text || "";
       });
 
+      setText(doc, "#pricing .pricing-head .eyebrow", state.pricingEyebrow);
+      setText(doc, "#pricing .pricing-head .section-title", state.pricingTitle);
+      setText(doc, "#pricing .pricing-head .section-lead", state.pricingLead);
+      setText(doc, "#pricing .pricing-footnote", state.pricingNote);
+
       setText(doc, "#works .projects-head .eyebrow", state.worksEyebrow);
       setText(doc, "#works .projects-head .section-title", state.worksTitle);
       setText(doc, "#works .projects-head .section-lead", state.worksLead);
@@ -1781,7 +2141,22 @@
 
       const projectScript = Array.from(doc.querySelectorAll("script")).find((script) => script.textContent.includes("window.PROJECTS"));
       if (projectScript) {
-        projectScript.textContent = `\n    window.PROJECTS = ${JSON.stringify(state.projects || [], null, 2)};\n  `;
+        const cleanProjects = (state.projects || []).map((project) => {
+          const copy = { ...project };
+          normalizeProjectImages(copy);
+          return copy;
+        });
+        projectScript.textContent = `\n    window.PROJECTS = ${JSON.stringify(cleanProjects, null, 2)};\n  `;
+      }
+
+      const priceScript = Array.from(doc.querySelectorAll("script")).find((script) => script.textContent.includes("window.PRICE_ITEMS"));
+      if (priceScript) {
+        const priceData = JSON.stringify(state.priceItems || [], null, 2);
+        const replacement = `window.PRICE_ITEMS = ${priceData};\n\n    /* =========================\n       安裝實績`;
+        priceScript.textContent = priceScript.textContent.replace(
+          /window\.PRICE_ITEMS\s*=\s*[\s\S]*?;\s*\/\* =========================\s*安裝實績/,
+          replacement
+        );
       }
 
       return "<!doctype html>\n" + doc.documentElement.outerHTML;
@@ -1932,13 +2307,23 @@
       }
     }
 
+    function addPriceItem() {
+      collectForm();
+      if (!Array.isArray(state.priceItems)) state.priceItems = [];
+      state.priceItems.unshift(createPriceItem());
+      renderPriceEditor();
+      saveState();
+    }
+
     function addProject() {
       collectForm();
       state.projects.unshift({
         id: `project-${Date.now()}`,
         title: "新的施工案例",
         description: "請輸入施工地點、冷氣類型、現場重點與完工說明。",
-        imageUrl: ""
+        detail: "可補充現場條件、施工方式、使用設備、完工後改善重點，讓客人點進來能看懂這個案例。",
+        imageUrl: "",
+        images: []
       });
       renderProjectsEditor();
       saveState();
@@ -1960,8 +2345,14 @@
         const navLinks = doc.querySelectorAll(".nav-links a");
         state.navHome = navLinks[0]?.textContent.trim() || state.navHome;
         state.navServices = navLinks[1]?.textContent.trim() || state.navServices;
-        state.navWorks = navLinks[2]?.textContent.trim() || state.navWorks;
-        state.navContact = navLinks[3]?.textContent.trim() || state.navContact;
+        if (navLinks.length >= 5) {
+          state.navPricing = navLinks[2]?.textContent.trim() || state.navPricing;
+          state.navWorks = navLinks[3]?.textContent.trim() || state.navWorks;
+          state.navContact = navLinks[4]?.textContent.trim() || state.navContact;
+        } else {
+          state.navWorks = navLinks[2]?.textContent.trim() || state.navWorks;
+          state.navContact = navLinks[3]?.textContent.trim() || state.navContact;
+        }
 
         state.heroKicker = doc.querySelector(".hero-kicker")?.textContent.trim() || state.heroKicker;
         state.heroTitle = doc.querySelector(".hero h1")?.textContent.trim() || state.heroTitle;
@@ -2021,6 +2412,11 @@
           state[textKey] = card.querySelector("p")?.textContent.trim() || state[textKey];
         });
 
+        state.pricingEyebrow = doc.querySelector("#pricing .pricing-head .eyebrow")?.textContent.trim() || state.pricingEyebrow;
+        state.pricingTitle = doc.querySelector("#pricing .pricing-head .section-title")?.textContent.trim() || state.pricingTitle;
+        state.pricingLead = doc.querySelector("#pricing .pricing-head .section-lead")?.textContent.trim() || state.pricingLead;
+        state.pricingNote = doc.querySelector("#pricing .pricing-footnote")?.textContent.trim() || state.pricingNote;
+
         state.worksEyebrow = doc.querySelector("#works .projects-head .eyebrow")?.textContent.trim() || state.worksEyebrow;
         state.worksTitle = doc.querySelector("#works .projects-head .section-title")?.textContent.trim() || state.worksTitle;
         state.worksLead = doc.querySelector("#works .projects-head .section-lead")?.textContent.trim() || state.worksLead;
@@ -2070,6 +2466,15 @@
           const fakeWindow = {};
           new Function("window", `${projectScript.textContent}; return window.PROJECTS || [];`)(fakeWindow);
           state.projects = fakeWindow.PROJECTS || [];
+          state.projects.forEach(normalizeProjectImages);
+        }
+
+        const priceScript = Array.from(doc.querySelectorAll("script")).find((script) => script.textContent.includes("window.PRICE_ITEMS"));
+        if (priceScript) {
+          const match = priceScript.textContent.match(/window\.PRICE_ITEMS\s*=\s*([\s\S]*?);\s*\/\* =========================\s*安裝實績/);
+          if (match) {
+            state.priceItems = new Function(`return (${match[1]});`)();
+          }
         }
 
         fillForm();
@@ -2182,6 +2587,7 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && cropSession) closeCropper();
     });
+    document.querySelector("#addPriceItem").addEventListener("click", addPriceItem);
     document.querySelector("#addProject").addEventListener("click", addProject);
     document.querySelector("#downloadProjects").addEventListener("click", downloadProjectsJs);
     document.querySelector("#downloadHtml").addEventListener("click", downloadHtml);
