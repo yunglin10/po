@@ -67,14 +67,17 @@
     }
 
     .brand-mark {
-      display: grid;
-      width: 42px;
+      display: block;
+      width: 54px;
       height: 42px;
-      place-items: center;
-      border-radius: 50%;
-      background: #0a4c5e;
-      color: white;
-      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
     }
 
     .brand strong {
@@ -613,7 +616,7 @@
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark">冷</div>
+        <div class="brand-mark"><img src="assets/logo-black.svg" alt=""></div>
         <div>
           <strong>一定冷簡易後台</strong>
           <span>新版 HTML 專用</span>
@@ -706,12 +709,24 @@
             <p>包含左上角品牌、選單文字、英文標語與三個亮點卡。</p>
           </div>
           <div class="field">
-            <label for="brandMark">品牌圓形字</label>
+            <label for="brandMark">品牌備用文字</label>
             <input id="brandMark" data-key="brandMark">
           </div>
           <div class="field">
             <label for="brandName">品牌名稱</label>
             <input id="brandName" data-key="brandName">
+          </div>
+          <div class="field full image-field">
+            <div class="image-preview" data-preview-key="brandLogo"></div>
+            <div>
+              <label for="brandLogoFile">品牌商標圖片</label>
+              <input id="brandLogo" type="hidden" data-key="brandLogo">
+              <input id="brandLogoFile" type="file" accept="image/*" data-image-key="brandLogo">
+              <div class="small-actions">
+                <button class="btn ghost" type="button" data-clear-image="brandLogo">清除商標圖，改用備用文字</button>
+              </div>
+              <p class="hint">建議用透明背景 PNG 或 SVG。你這次上傳的圖已整理成黑色商標，會套用在網站左上角。</p>
+            </div>
           </div>
           <div class="field">
             <label for="navHome">選單：主頁</label>
@@ -1226,6 +1241,7 @@
     const fallbackState = {
       brandMark: "冷",
       brandName: "一定冷空調工程有限公司",
+      brandLogo: "assets/logo-black.svg",
       navHome: "主頁",
       navServices: "服務項目",
       navPricing: "報價目錄",
@@ -1340,7 +1356,7 @@
       company: "一定冷空調工程有限公司",
       serviceArea: "桃園全區",
       landline: "（03）4921522",
-      mobile: "0931379539",
+      mobile: "a931379539",
       address: "桃園市平鎮區環南路二段155號",
       hours: "週一到週日 08:00 - 20:00",
       instagram: "https://www.instagram.com/cool__air_chuang?igsh=MTNod2Q4ejg5MTBtdA==",
@@ -1509,6 +1525,15 @@
     }
 
     function cropPresetForKey(key) {
+      if (key === "brandLogo") {
+        return {
+          title: "裁剪品牌商標圖片",
+          hint: "商標適合保留左右留白，放在導覽列才會穩。若是透明 PNG，裁剪後仍會以圖片方式套用。",
+          aspect: 2 / 1,
+          outputWidth: 1000
+        };
+      }
+
       if (key === "heroImage") {
         return {
           title: "裁剪首頁背景圖",
@@ -1766,6 +1791,12 @@
       }
     }
 
+    function migrateLegacyValues() {
+      if (state.mobile === "0931379539") {
+        state.mobile = "a931379539";
+      }
+    }
+
     function renderProjectsEditor() {
       projectList.innerHTML = "";
 
@@ -1940,6 +1971,18 @@
       anchor.innerHTML = `${escapeHtml(text)} <span class="arrow" aria-hidden="true">→</span>`;
     }
 
+    function setBrandMark(doc) {
+      const brandMark = doc.querySelector(".brand-mark");
+      if (!brandMark) return;
+
+      if (state.brandLogo) {
+        brandMark.innerHTML = `<img src="${escapeAttribute(state.brandLogo)}" alt="">`;
+        return;
+      }
+
+      brandMark.textContent = state.brandMark || "";
+    }
+
     function setText(doc, selector, text) {
       const element = doc.querySelector(selector);
       if (element) element.textContent = text || "";
@@ -2002,7 +2045,7 @@
     function updateTemplate(html) {
       const doc = new DOMParser().parseFromString(html, "text/html");
 
-      setText(doc, ".brand-mark", state.brandMark);
+      setBrandMark(doc);
       setText(doc, ".brand > span:last-child", state.brandName);
       const navLinks = doc.querySelectorAll(".nav-links a");
       [state.navHome, state.navServices, state.navPricing, state.navWorks, state.navContact].forEach((text, index) => {
@@ -2340,7 +2383,9 @@
           aboutImage: getCssBackgroundUrl(doc, ".about-photo")
         };
 
-        state.brandMark = doc.querySelector(".brand-mark")?.textContent.trim() || state.brandMark;
+        const brandMarkElement = doc.querySelector(".brand-mark");
+        state.brandLogo = brandMarkElement?.querySelector("img")?.getAttribute("src") || state.brandLogo;
+        state.brandMark = brandMarkElement?.textContent.trim() || state.brandMark;
         state.brandName = doc.querySelector(".brand > span:last-child")?.textContent.trim() || state.brandName;
         const navLinks = doc.querySelectorAll(".nav-links a");
         state.navHome = navLinks[0]?.textContent.trim() || state.navHome;
@@ -2605,6 +2650,7 @@
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       state = { ...structuredClone(fallbackState), ...JSON.parse(saved) };
+      migrateLegacyValues();
       fillForm();
       hydrateDefaultImages();
       setStatus("已載入本機資料");
