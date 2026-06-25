@@ -216,16 +216,17 @@
     }
 
     .brand-mark {
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      border: 1px solid var(--cool-deep);
-      border-radius: 999px;
-      color: var(--cool-deep);
-      background: rgba(185, 220, 232, 0.18);
-      font-size: 18px;
+      width: 68px;
+      height: 42px;
+      display: block;
+      flex: 0 0 auto;
       line-height: 1;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
     }
 
     .nav-links {
@@ -1186,7 +1187,7 @@
   <header class="site-header">
     <div class="container nav">
       <a class="brand" href="#home" aria-label="回到首頁">
-        <span class="brand-mark" aria-hidden="true">冷</span>
+        <span class="brand-mark" aria-hidden="true"><img src="assets/logo-black.svg" alt=""></span>
         <span>一定冷空調工程有限公司</span>
       </a>
       <button class="nav-toggle" type="button" aria-label="開啟選單" aria-expanded="false">
