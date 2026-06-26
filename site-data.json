@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T06:34:42.019Z",
+  "updatedAt": "2026-06-26T06:36:32.474Z",
   "source": "edlcool-admin",
   "state": {
     "brandMark": "冷",
@@ -171,7 +171,7 @@
     "formMessagePlaceholder": "例：服務地址、冷氣坪數、想安裝/維修/保養、方便聯絡時間...",
     "formButton": "送出需求",
     "formEmail": "yonglinz666@gmail.com",
-    "formSuccess": "已收到你的需求範例。正式上線時可改接 Google 表單、LINE 或後端 API。",
+    "formSuccess": "已送出需求，感謝你的預約。我們會盡快與你聯絡。",
     "footerText": "© 2026 一定冷空調工程有限公司 All Rights Reserved.",
     "projects": [
       {
