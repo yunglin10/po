@@ -690,7 +690,7 @@
           </div>
         </div>
         <div class="actions">
-          <button class="btn primary" data-action="save">儲存到本機後台</button>
+          <button class="btn primary" data-action="save">暫存草稿</button>
           <button class="btn ghost" data-action="reset">重新讀取目前網站</button>
         </div>
       </section>
@@ -941,7 +941,7 @@
           </div>
         </div>
         <div class="actions">
-          <button class="btn primary" data-action="save">儲存到本機後台</button>
+          <button class="btn primary" data-action="save">暫存草稿</button>
           <button class="btn ghost" data-action="reset">重新讀取目前網站</button>
         </div>
       </section>
@@ -1090,7 +1090,7 @@
           </div>
         </div>
         <div class="actions">
-          <button class="btn primary" data-action="save">儲存到本機後台</button>
+          <button class="btn primary" data-action="save">暫存草稿</button>
         </div>
       </section>
 
@@ -1122,7 +1122,7 @@
         </div>
         <div class="price-list" id="priceList"></div>
         <div class="actions">
-          <button class="btn primary" data-action="save">儲存到本機後台</button>
+          <button class="btn primary" data-action="save">暫存草稿</button>
         </div>
       </section>
 
@@ -1136,7 +1136,7 @@
         </div>
         <div class="project-list" id="projectList"></div>
         <div class="actions">
-          <button class="btn primary" data-action="save">儲存到本機後台</button>
+          <button class="btn primary" data-action="save">暫存草稿</button>
           <button class="btn ghost" id="downloadProjects">下載 projects.js</button>
         </div>
       </section>
@@ -1145,21 +1145,22 @@
         <div class="panel-head">
           <div>
             <h2>發布網站</h2>
-            <p class="hint">平常只要按「發布網站」。系統會把目前後台內容更新到 GitHub Pages。</p>
+            <p class="hint">平常只要按「發布網站」。系統會把目前後台內容更新到 GitHub Pages，並同步成雲端資料，讓不同電腦打開後台時看到同一份內容。</p>
           </div>
         </div>
         <div class="publish-box">
-          <strong>一鍵發布</strong>
-          <p class="hint">改完文字或圖片後，按下方按鈕，等待 1 到 3 分鐘後正式網站就會更新。</p>
+          <strong>一鍵發布與雲端同步</strong>
+          <p class="hint">改完文字或圖片後，按「發布網站」。系統會同時更新正式網站與 site-data.json 雲端資料；其它電腦重新打開後台就會讀到最新內容。</p>
           <div class="actions">
             <button class="btn green" id="publishGithub">發布網站</button>
+            <button class="btn ghost" id="reloadCloud" type="button">重新讀取雲端資料</button>
             <button class="btn ghost" data-action="preview">開啟目前預覽</button>
             <a class="btn ghost" href="https://yunglin10.github.io/po/" target="_blank" rel="noopener">開啟正式網站</a>
           </div>
         </div>
         <div class="publish-box">
           <strong>第一次設定</strong>
-          <p class="hint">第一次發布需要貼 GitHub 權杖。貼上後同一台電腦會記住，下次就直接按「發布網站」。</p>
+          <p class="hint">第一次發布需要貼 GitHub 權杖。每台新電腦第一次使用後台時都要貼一次，貼上後那台電腦會記住；網站內容本身會存在 GitHub 雲端資料裡。</p>
           <div class="grid">
             <label class="field">
               <span>GitHub repo</span>
@@ -1237,6 +1238,8 @@
     const DEFAULT_REPO = "yunglin10/po";
     const DEFAULT_BRANCH = "main";
     const WEBSITE_FILE = "index.html";
+    const CLOUD_DATA_FILE = "site-data.json";
+    const CLOUD_DATA_VERSION = 1;
 
     const fallbackState = {
       brandMark: "冷",
@@ -1448,6 +1451,21 @@
       return isLocal ? ["index-single.html", "index.html"] : ["index.html", "index-single.html"];
     }
 
+    function getCloudDataCandidates() {
+      const cacheBust = `?v=${Date.now()}`;
+      const isLocal = ["localhost", "127.0.0.1", ""].includes(window.location.hostname);
+      if (isLocal) {
+        return [
+          `https://yunglin10.github.io/po/${CLOUD_DATA_FILE}${cacheBust}`,
+          `https://raw.githubusercontent.com/${DEFAULT_REPO}/${DEFAULT_BRANCH}/${CLOUD_DATA_FILE}${cacheBust}`
+        ];
+      }
+      return [
+        `${CLOUD_DATA_FILE}${cacheBust}`,
+        `https://raw.githubusercontent.com/${DEFAULT_REPO}/${DEFAULT_BRANCH}/${CLOUD_DATA_FILE}${cacheBust}`
+      ];
+    }
+
     async function fetchTemplateHtml() {
       const candidates = getTemplateCandidates();
       let lastError = null;
@@ -1467,6 +1485,70 @@
       }
 
       throw lastError || new Error("找不到可讀取的網站首頁檔案");
+    }
+
+    function normalizeLoadedState(input) {
+      const loadedState = input && input.state ? input.state : input;
+      const nextState = {
+        ...structuredClone(fallbackState),
+        ...(loadedState || {})
+      };
+
+      if (!Array.isArray(nextState.priceItems)) nextState.priceItems = [];
+      if (!Array.isArray(nextState.projects)) nextState.projects = [];
+      nextState.projects.forEach(normalizeProjectImages);
+      return nextState;
+    }
+
+    function createCloudPayload() {
+      collectForm();
+      migrateLegacyValues();
+      return {
+        version: CLOUD_DATA_VERSION,
+        updatedAt: new Date().toISOString(),
+        source: "edlcool-admin",
+        state
+      };
+    }
+
+    async function fetchCloudState() {
+      const candidates = getCloudDataCandidates();
+      let lastError = null;
+
+      for (const url of candidates) {
+        try {
+          const response = await fetch(url, { cache: "no-store" });
+          if (response.status === 404) {
+            lastError = new Error("雲端資料尚未建立");
+            continue;
+          }
+          if (!response.ok) {
+            lastError = new Error(`雲端資料讀取失敗：${response.status}`);
+            continue;
+          }
+          return await response.json();
+        } catch (error) {
+          lastError = error;
+        }
+      }
+
+      throw lastError || new Error("找不到可讀取的雲端資料");
+    }
+
+    async function loadFromCloud() {
+      setStatus("正在讀取雲端資料...");
+      try {
+        const cloudData = await fetchCloudState();
+        state = normalizeLoadedState(cloudData);
+        migrateLegacyValues();
+        fillForm();
+        hydrateDefaultImages();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        setStatus("已載入雲端資料");
+      } catch (error) {
+        console.warn("雲端資料讀取失敗，改讀目前網站", error);
+        await loadFromTemplate();
+      }
     }
 
     function getPreviewTarget() {
@@ -1513,7 +1595,7 @@
     function saveState() {
       collectForm();
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      setStatus("已儲存到本機");
+      setStatus("已暫存到這台電腦；按發布網站才會同步雲端");
     }
 
     function slugify(value) {
@@ -2294,6 +2376,40 @@
       }
     }
 
+    async function upsertGitHubTextFile({ owner, repo, path, content, token, message }) {
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+      const fileResponse = await fetch(`${apiUrl}?ref=${encodeURIComponent(DEFAULT_BRANCH)}`, {
+        headers: githubHeaders(token)
+      });
+      const fileInfo = await readGitHubJson(fileResponse);
+
+      if (!fileResponse.ok && fileResponse.status !== 404) {
+        throw new Error(fileInfo.message || `讀取 GitHub ${path} 失敗`);
+      }
+
+      const body = {
+        message,
+        content: toBase64Utf8(content),
+        branch: DEFAULT_BRANCH
+      };
+
+      if (fileResponse.ok && fileInfo.sha) {
+        body.sha = fileInfo.sha;
+      }
+
+      const updateResponse = await fetch(apiUrl, {
+        method: "PUT",
+        headers: githubHeaders(token),
+        body: JSON.stringify(body)
+      });
+      const updateInfo = await readGitHubJson(updateResponse);
+      if (!updateResponse.ok) {
+        throw new Error(updateInfo.message || `更新 GitHub ${path} 失敗`);
+      }
+
+      return updateInfo;
+    }
+
     async function publishToGithub() {
       collectForm();
 
@@ -2308,41 +2424,36 @@
 
       try {
         const { owner, repo } = parseRepository(githubRepo.value);
-        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${WEBSITE_FILE}`;
         const message = (commitMessage.value || "Update website content").trim();
 
         setStatus("正在產生新版首頁...");
         const html = await buildHtml();
 
-        setStatus("正在讀取 GitHub 目前檔案...");
-        const fileResponse = await fetch(`${apiUrl}?ref=${encodeURIComponent(DEFAULT_BRANCH)}`, {
-          headers: githubHeaders(token)
-        });
-        const fileInfo = await readGitHubJson(fileResponse);
-        if (!fileResponse.ok) {
-          throw new Error(fileInfo.message || "讀取 GitHub 檔案失敗");
-        }
-
         setStatus("正在發布到 GitHub Pages...");
-        const updateResponse = await fetch(apiUrl, {
-          method: "PUT",
-          headers: githubHeaders(token),
-          body: JSON.stringify({
-            message,
-            content: toBase64Utf8(html),
-            sha: fileInfo.sha,
-            branch: DEFAULT_BRANCH
-          })
+        await upsertGitHubTextFile({
+          owner,
+          repo,
+          path: WEBSITE_FILE,
+          content: html,
+          token,
+          message
         });
-        const updateInfo = await readGitHubJson(updateResponse);
-        if (!updateResponse.ok) {
-          throw new Error(updateInfo.message || "發布失敗，請確認權杖權限");
-        }
+
+        setStatus("正在同步雲端後台資料...");
+        const cloudPayload = createCloudPayload();
+        await upsertGitHubTextFile({
+          owner,
+          repo,
+          path: CLOUD_DATA_FILE,
+          content: `${JSON.stringify(cloudPayload, null, 2)}\n`,
+          token,
+          message: `${message} cloud data`
+        });
 
         localStorage.setItem(TOKEN_KEY, token);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        setStatus("已發布，請等 1 到 3 分鐘後重新整理正式網站");
-        alert("發布完成！GitHub Pages 通常 1 到 3 分鐘會更新。");
+        setStatus("已發布並同步雲端，請等 1 到 3 分鐘後重新整理正式網站");
+        alert("發布完成！正式網站和雲端後台資料都已更新。其它電腦重新打開後台就會讀到最新內容。");
       } catch (error) {
         console.error(error);
         setStatus("發布失敗");
@@ -2637,6 +2748,7 @@
     document.querySelector("#downloadProjects").addEventListener("click", downloadProjectsJs);
     document.querySelector("#downloadHtml").addEventListener("click", downloadHtml);
     document.querySelector("#publishGithub").addEventListener("click", publishToGithub);
+    document.querySelector("#reloadCloud").addEventListener("click", loadFromCloud);
     quickPublish.addEventListener("click", publishToGithub);
     document.querySelector("#makeEmbed").addEventListener("click", makeEmbedCode);
     document.querySelector("#copyEmbed").addEventListener("click", copyEmbedCode);
@@ -2647,16 +2759,7 @@
       localStorage.setItem(TOKEN_KEY, githubToken.value.trim());
     });
 
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      state = { ...structuredClone(fallbackState), ...JSON.parse(saved) };
-      migrateLegacyValues();
-      fillForm();
-      hydrateDefaultImages();
-      setStatus("已載入本機資料");
-    } else {
-      loadFromTemplate();
-    }
+    loadFromCloud();
   </script>
 </body>
 </html>
