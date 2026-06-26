@@ -950,7 +950,7 @@
         <div class="panel-head">
           <div>
             <h2>聯絡資訊</h2>
-            <p class="hint">更新公司名稱、電話、LINE、IG、地址與營業時間。Google 地圖會依地址自動更新。</p>
+            <p class="hint">更新公司名稱、電話、LINE、IG、地址與營業時間。Google 地圖會用「公司名稱＋地址」搜尋，優先對到商家名稱。</p>
           </div>
         </div>
         <div class="grid">
@@ -1438,12 +1438,19 @@
       return `https://line.me/ti/p/~${id}`;
     }
 
+    function getMapQuery() {
+      return [state.company, state.address]
+        .map((part) => String(part || "").trim())
+        .filter(Boolean)
+        .join(" ");
+    }
+
     function getMapUrl() {
-      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(state.address || "")}`;
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getMapQuery())}`;
     }
 
     function getMapEmbedUrl() {
-      return `https://www.google.com/maps?q=${encodeURIComponent(state.address || "")}&output=embed`;
+      return `https://www.google.com/maps?q=${encodeURIComponent(getMapQuery())}&output=embed`;
     }
 
     function getTemplateCandidates() {
