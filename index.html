@@ -1349,11 +1349,11 @@
             <li><span>公司名稱</span><strong>一定冷空調工程有限公司</strong></li>
             <li><span>服務範圍</span><strong>桃園全區</strong></li>
             <li><span>市話</span><strong>（03）4921522</strong></li>
-            <li><span>手機 </span><strong>0931379539</strong></li>
+            <li><span>手機 </span><strong>a931379539</strong></li>
             <li><span>地址</span><strong>桃園市平鎮區環南路二段155號</strong></li>
             <li><span>營業時間</span><strong>週一到週日 08:00 - 20:00</strong></li>
           </ul>
-          <a class="btn btn-line" href="https://line.me/ti/p/~0931379539" target="_blank" rel="noopener">點我加 LINE 諮詢 <span class="arrow" aria-hidden="true">→</span></a>
+          <a class="btn btn-line" href="https://line.me/ti/p/~a931379539" target="_blank" rel="noopener">點我加 LINE 諮詢 <span class="arrow" aria-hidden="true">→</span></a>
           <div class="social-row">
             <a class="btn btn-ghost" href="https://www.instagram.com/cool__air_chuang?igsh=MTNod2Q4ejg5MTBtdA==" target="_blank" rel="noopener">Instagram</a>
             <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=%E4%B8%80%E5%AE%9A%E5%86%B7%E7%A9%BA%E8%AA%BF%E5%B7%A5%E7%A8%8B%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%20%E6%A1%83%E5%9C%92%E5%B8%82%E5%B9%B3%E9%8E%AE%E5%8D%80%E7%92%B0%E5%8D%97%E8%B7%AF%E4%BA%8C%E6%AE%B5155%E8%99%9F" target="_blank" rel="noopener">Google 地圖</a>
@@ -1367,18 +1367,23 @@
         <div class="form-panel reveal">
           <p class="eyebrow">FORM</p>
           <h2 class="section-title">預約表單</h2>
-          <form class="form" id="contactForm">
+          <form class="form" id="contactForm" action="https://formsubmit.co/yonglinz666@gmail.com" method="POST">
+            <input type="text" name="_honey" value="" style="display:none" tabindex="-1" autocomplete="off">
+            <input type="hidden" name="_subject" value="一定冷空調網站預約表單">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_next" value="https://yunglin10.github.io/po/?sent=1#contact">
             <div class="field">
               <label for="name">姓名</label>
-              <input id="name" name="name" type="text" autocomplete="name" placeholder="請輸入您的姓名" required="">
+              <input id="name" name="姓名" type="text" autocomplete="name" placeholder="請輸入您的姓名" required="">
             </div>
             <div class="field">
               <label for="phone">電話</label>
-              <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="例：0912-345-678" required="">
+              <input id="phone" name="聯絡電話" type="tel" autocomplete="tel" placeholder="例：0912-345-678" required="">
             </div>
             <div class="field">
               <label for="message">需求備註</label>
-              <textarea id="message" name="message" placeholder="例：服務地址、冷氣坪數、想安裝/維修/保養、方便聯絡時間..." required=""></textarea>
+              <textarea id="message" name="需求備註" placeholder="例：服務地址、冷氣坪數、想安裝/維修/保養、方便聯絡時間..." required=""></textarea>
             </div>
             <button class="btn btn-primary" type="submit">送出需求 <span class="arrow" aria-hidden="true">→</span></button>
             <p class="form-message" id="formMessage">已收到你的需求範例。正式上線時可改接 Google 表單、LINE 或後端 API。</p>
@@ -1416,7 +1421,7 @@
     <div class="container footer-inner">
       <div>© 2026 一定冷空調工程有限公司 All Rights Reserved.</div>
       <div class="footer-links">
-        <a href="https://line.me/ti/p/~0931379539" target="_blank" rel="noopener">LINE</a>
+        <a href="https://line.me/ti/p/~a931379539" target="_blank" rel="noopener">LINE</a>
         <a href="https://www.instagram.com/cool__air_chuang?igsh=MTNod2Q4ejg5MTBtdA==" target="_blank" rel="noopener">Instagram</a>
       </div>
     </div>
@@ -1717,15 +1722,19 @@
     renderProjects(window.PROJECTS || []);
 
     /* =========================
-       表單示範：正式網站可改接 Google Form 或 LINE
+       預約表單：送出到 FormSubmit，轉寄到 Gmail
        ========================= */
     const form = document.querySelector("#contactForm");
     const formMessage = document.querySelector("#formMessage");
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
+    if (new URLSearchParams(window.location.search).get("sent") === "1") {
+      formMessage?.classList.add("is-show");
+    }
+
+    form?.addEventListener("submit", () => {
+      if (!formMessage) return;
+      formMessage.textContent = "正在送出，請稍候...";
       formMessage.classList.add("is-show");
-      form.reset();
     });
 
     /* =========================
