@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T06:19:54.557Z",
+  "updatedAt": "2026-06-26T06:29:42.863Z",
   "source": "edlcool-admin",
   "state": {
     "brandMark": "冷",
@@ -156,7 +156,7 @@
     "infoCompanyLabel": "公司名稱",
     "infoAreaLabel": "服務範圍",
     "infoLandlineLabel": "市話",
-    "infoMobileLabel": "手機 / LINE",
+    "infoMobileLabel": "手機 ",
     "infoAddressLabel": "地址",
     "infoHoursLabel": "營業時間",
     "contactEyebrow": "CONTACT",
