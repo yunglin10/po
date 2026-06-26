@@ -1156,7 +1156,6 @@
           <strong>一鍵發布與雲端同步</strong>
           <p class="hint">改完文字或圖片後，按「發布網站」。系統會同時更新正式網站與 site-data.json 雲端資料；其它電腦重新打開後台就會讀到最新內容。</p>
           <div class="actions">
-            <button class="btn green" id="publishGithub">發布網站</button>
             <button class="btn ghost" id="reloadCloud" type="button">重新讀取雲端資料</button>
             <button class="btn ghost" data-action="preview">開啟目前預覽</button>
             <a class="btn ghost" href="https://yunglin10.github.io/po/" target="_blank" rel="noopener">開啟正式網站</a>
@@ -2823,7 +2822,6 @@
     document.querySelector("#addProject").addEventListener("click", addProject);
     document.querySelector("#downloadProjects").addEventListener("click", downloadProjectsJs);
     document.querySelector("#downloadHtml").addEventListener("click", downloadHtml);
-    document.querySelector("#publishGithub").addEventListener("click", publishToGithub);
     document.querySelector("#reloadCloud").addEventListener("click", loadFromCloud);
     quickPublish.addEventListener("click", publishToGithub);
     document.querySelector("#makeEmbed").addEventListener("click", makeEmbedCode);
