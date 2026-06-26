@@ -1046,7 +1046,11 @@
 
           <div class="subsection">
             <h3>表單文字</h3>
-            <p>右側預約表單的標題、欄位名稱、提示文字與送出後訊息都能改。</p>
+            <p>右側預約表單的標題、欄位名稱、提示文字、收件信箱與送出後訊息都能改。</p>
+          </div>
+          <div class="field full">
+            <label for="formEmail">表單收件 Gmail</label>
+            <input id="formEmail" data-key="formEmail" type="email" placeholder="例如：yonglinz666@gmail.com">
           </div>
           <div class="field">
             <label for="formEyebrow">表單小標</label>
@@ -1385,7 +1389,8 @@
       formMessageLabel: "需求備註",
       formMessagePlaceholder: "例：服務地址、冷氣坪數、想安裝/維修/保養、方便聯絡時間...",
       formButton: "送出需求",
-      formSuccess: "已收到你的需求範例。正式上線時可改接 Google 表單、LINE 或後端 API。",
+      formEmail: "yonglinz666@gmail.com",
+      formSuccess: "已送出需求，感謝你的預約。我們會盡快與你聯絡。",
       footerText: "© 2026 一定冷空調工程有限公司 All Rights Reserved.",
       projects: []
     };
@@ -1451,6 +1456,15 @@
 
     function getMapEmbedUrl() {
       return `https://www.google.com/maps?q=${encodeURIComponent(getMapQuery())}&output=embed`;
+    }
+
+    function getFormEmail() {
+      const email = String(state.formEmail || "yonglinz666@gmail.com").trim();
+      return email || "yonglinz666@gmail.com";
+    }
+
+    function getFormSubmitUrl() {
+      return `https://formsubmit.co/${getFormEmail()}`;
     }
 
     function getTemplateCandidates() {
@@ -2082,6 +2096,57 @@
       if (element) element.setAttribute(attribute, value || "");
     }
 
+    function setFormFieldName(doc, selector, name) {
+      const element = doc.querySelector(selector);
+      if (element) element.setAttribute("name", name);
+    }
+
+    function setFormHiddenInput(doc, form, name, value, options = {}) {
+      if (!form) return;
+
+      let input = Array.from(form.querySelectorAll("input")).find((field) => field.getAttribute("name") === name);
+      if (!input) {
+        input = doc.createElement("input");
+        const firstField = form.querySelector(".field");
+        form.insertBefore(input, firstField || form.firstChild);
+      }
+
+      input.setAttribute("type", options.type || "hidden");
+      input.setAttribute("name", name);
+      input.setAttribute("value", value || "");
+
+      if (options.style) input.setAttribute("style", options.style);
+      else input.removeAttribute("style");
+
+      if (options.tabindex) input.setAttribute("tabindex", options.tabindex);
+      else input.removeAttribute("tabindex");
+
+      if (options.autocomplete) input.setAttribute("autocomplete", options.autocomplete);
+      else input.removeAttribute("autocomplete");
+    }
+
+    function configureContactForm(doc) {
+      const form = doc.querySelector("#contactForm");
+      if (!form) return;
+
+      form.setAttribute("action", getFormSubmitUrl());
+      form.setAttribute("method", "POST");
+      setFormFieldName(doc, "#contactForm #name", "姓名");
+      setFormFieldName(doc, "#contactForm #phone", "聯絡電話");
+      setFormFieldName(doc, "#contactForm #message", "需求備註");
+
+      setFormHiddenInput(doc, form, "_honey", "", {
+        type: "text",
+        style: "display:none",
+        tabindex: "-1",
+        autocomplete: "off"
+      });
+      setFormHiddenInput(doc, form, "_subject", "一定冷空調網站預約表單");
+      setFormHiddenInput(doc, form, "_template", "table");
+      setFormHiddenInput(doc, form, "_captcha", "false");
+      setFormHiddenInput(doc, form, "_next", "https://yunglin10.github.io/po/?sent=1#contact");
+    }
+
     function getActionText(element) {
       if (!element) return "";
       const ownText = Array.from(element.childNodes)
@@ -2259,6 +2324,7 @@
       setAttribute(doc, "#contactForm #message", "placeholder", state.formMessagePlaceholder);
       setButtonText(doc.querySelector("#contactForm button[type='submit']"), state.formButton);
       setText(doc, "#formMessage", state.formSuccess);
+      configureContactForm(doc);
 
       setText(doc, ".footer-inner > div:first-child", state.footerText);
       const footerLinks = doc.querySelectorAll(".footer-links a");
@@ -2618,6 +2684,9 @@
         state.formMessagePlaceholder = doc.querySelector("#contactForm #message")?.getAttribute("placeholder") || state.formMessagePlaceholder;
         state.formButton = getActionText(doc.querySelector("#contactForm button[type='submit']")) || state.formButton;
         state.formSuccess = doc.querySelector("#formMessage")?.textContent.trim() || state.formSuccess;
+        const formAction = doc.querySelector("#contactForm")?.getAttribute("action") || "";
+        const formEmailMatch = formAction.match(/formsubmit\.co\/([^/?#]+)/);
+        if (formEmailMatch) state.formEmail = decodeURIComponent(formEmailMatch[1]);
 
         state.footerText = doc.querySelector(".footer-inner > div:first-child")?.textContent.trim() || state.footerText;
         const footerLinks = doc.querySelectorAll(".footer-links a");
